@@ -50,6 +50,11 @@ def build_word_vec_dict(word2vec_file):
     return None
 
 
+def load_word_vec_dict(pickle_file):
+    """
+    Extracts word embeddings for a given word.
+    """
+    return cPickle.load(open(pickle_file))
 
 
 
@@ -137,8 +142,8 @@ def compute_words_from_vecs(word2vec_file, vec, n):
     return top_results
 
 
-word2vec_file = sys.argv[1]
-build_word_vec_dict(word2vec_file)
+# word2vec_file = sys.argv[1]
+# build_word_vec_dict(word2vec_file)
 # vocab = ['apple', 'banana']
 # xx = compute_vecs_from_words(word2vec_file, vocab)
 
