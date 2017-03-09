@@ -112,6 +112,7 @@ def compute_vecs_from_words(word2vec_file, vocab):
 
 
 def compute_words_from_vecs(word2vec_file, vec, n):
+    from operator import itemgetter
     word_dist_dict = {}
     with open(word2vec_file, "rb") as f:
         header = f.readline()
@@ -132,8 +133,7 @@ def compute_words_from_vecs(word2vec_file, vec, n):
             word_vec = np.fromstring(f.read(binary_len), dtype='float32')
             dist = cosine(vec, word_vec)
             word_dist_dict[word] = dist
-    # sort the dict by the distance values
-    sorted_word_dist_dict = sorted(word_dist_dict.items(), key=operator.itemgetter(1))
+    sorted_word_dist_dict = sorted(word_dist_dict.items(), key=itemgetter(1))
     top_results = {}
     for u,v in sorted_word_dist_dict:
     	top_results[u] = v
