@@ -1,14 +1,8 @@
 """
-Models for object recognition. Based on VGG16 and VGG19.
+Training the VGG16 or VGG19 architectures with new data
 """
 
-import os
-import h5py
-import cv2
-import sys
 import numpy as np
-import json
-from glob import glob
 import matplotlib.pyplot as plt
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -17,11 +11,9 @@ from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
-from keras.utils import np_utils
 
 from keras import backend as K
 K.set_image_dim_ordering('th')
-
 
 from sys import exit
 __author__ = 'irshad'
@@ -32,15 +24,6 @@ def VGG16(inputshape, nb_class=2):
 	"""
 	Loads and builds the VGG16 model for object recognition.
 
-	Parameters
-	----------
-	weights_path: path to the HD5 file containing the weights of the pre-trained model.
-	img_width: Width of the image.
-	img_height: Height of the image.
-
-	Returns
-	-------
-	pre-trained model.
 	"""
 	model = Sequential()
 	model.add(ZeroPadding2D((1,1),input_shape=inputshape))
@@ -94,15 +77,6 @@ def VGG19(inputshape, nb_class=2):
 	"""
 	Loads and builds the VGG19 model for object recognition.
 
-	Parameters
-	----------
-	weights_path: path to the HD5 file containing the weights of the pre-trained model.
-	img_width: Width of the image.
-	img_height: Height of the image.
-
-	Returns
-	-------
-	pre-trained model.
 	"""
 	model = Sequential()
 	model.add(ZeroPadding2D((1,1),input_shape=inputshape))
@@ -189,93 +163,17 @@ def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 
 #==============================================================================
 
-xtrain = np.load('../data/catsdogs/xtrain.npy')
-ytrain = np.load('../data/catsdogs/ytrain.npy')
-xvalid = np.load('../data/catsdogs/xvalid.npy')
-yvalid = np.load('../data/catsdogs/yvalid.npy')
+xdata = np.load('/Users/mohammed/github/markovianlabs/image-classifier/data/101_ObjectCategories/xdata.npy')
+ydata = np.load('/Users/mohammed/github/markovianlabs/image-classifier/data/101_ObjectCategories/ydata.npy')
 
-vgg = 'vgg16'
+n = int(len(xdata)/2)
+xtrain = xdata[:n]
+xvalid = xdata[n:]
+ytrain = ydata[:n]
+yvalid = ydata[n:]
+
+vgg = 'vgg19'
 finalmodel = trainvgg(xtrain, ytrain, xvalid, yvalid, \
 	vgg=vgg, save=False)
 
 #==============================================================================
-
-# traincat = glob('../data/catsdogs/train/cats/cat.*')
-# traindog = glob('../data/catsdogs/train/dogs/dog.*')
-# validationcat = glob('../data/catsdogs/validation/cats/cat.*')
-# validationdog = glob('../data/catsdogs/validation/dogs/dog.*')
-
-
-# folder = '../data/catsdogs/'
-# xtrain = []
-# ytrain = []
-# xvalid = []
-# yvalid = []
-
-# for i in range(len(traincat)):
-# 	input_image = traincat[i]
-# 	im = cv2.resize(cv2.imread(input_image), (150, 150)).astype(np.float32)
-# 	im = np.transpose(im)
-# 	im[0] = np.transpose(im[0])
-# 	xtrain.append(im)
-# 	ytrain.append(0)
-
-# 	input_image = traindog[i]
-# 	im = cv2.resize(cv2.imread(input_image), (150, 150)).astype(np.float32)
-# 	im = np.transpose(im)
-# 	im[0] = np.transpose(im[0])
-# 	xtrain.append(im)
-# 	ytrain.append(1)
-
-# for i in range(len(validationcat)):
-# 	input_image = validationcat[i]
-# 	im = cv2.resize(cv2.imread(input_image), (150, 150)).astype(np.float32)
-# 	im = np.transpose(im)
-# 	im[0] = np.transpose(im[0])
-# 	xvalid.append(im)
-# 	yvalid.append(0)
-
-# 	input_image = validationdog[i]
-# 	im = cv2.resize(cv2.imread(input_image), (150, 150)).astype(np.float32)
-# 	im = np.transpose(im)
-# 	im[0] = np.transpose(im[0])
-# 	xvalid.append(im)
-# 	yvalid.append(1)
-
-# xtrain = np.array(xtrain)
-# ytrain = np.array(ytrain)
-# xvalid = np.array(xvalid)
-# yvalid = np.array(yvalid)
-
-
-# ind_train = np.arange(len(xtrain))
-# np.random.shuffle(ind_train)
-
-# ind_validation = np.arange(len(xvalid))
-# np.random.shuffle(ind_validation)
-
-# xtrain = xtrain[ind_train]
-# ytrain = ytrain[ind_train]
-
-# xvalid = xvalid[ind_validation]
-# yvalid = yvalid[ind_validation]
-
-
-# # One Hot Encoding
-# def one_hot_encode_object_array(arr):
-#     '''One hot encode a numpy array of objects (e.g. strings)'''
-#     uniques, ids = np.unique(arr, return_inverse=True)
-#     return np_utils.to_categorical(ids, len(uniques))
-
-# # One hot encode labels for training and test sets.
-# ytrain = one_hot_encode_object_array(ytrain)
-# yvalid = one_hot_encode_object_array(yvalid)
-
-# print xtrain.shape, ytrain.shape
-# print xvalid.shape, yvalid.shape
-
-# np.save('../data/catsdogs/xtrain.npy', xtrain)
-# np.save('../data/catsdogs/ytrain.npy', ytrain)
-# np.save('../data/catsdogs/xvalid.npy', xvalid)
-# np.save('../data/catsdogs/yvalid.npy', yvalid)
-# exit()
