@@ -173,8 +173,10 @@ def category_predict(input_image, model_type='vgg16', img_width=224, img_height=
 	img_height: Height of the image.
 	k: Number of categories to be returned.
 	"""
+	path = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/vggfiles/'%os.getlogin()
+
 	class_dict = {}
-	index_file = open('synset_words.txt')
+	index_file = open(path+'synset_words.txt')
 	for i,line in enumerate(index_file):
 		record = line.rstrip().split(' ')
 		class_dict[i] = record[1:]
@@ -187,10 +189,10 @@ def category_predict(input_image, model_type='vgg16', img_width=224, img_height=
 	im = np.expand_dims(im, axis=0)
 
 	if (model_type == 'vgg16'):
-		weights_path = '../vgg16_weights.h5'
+		weights_path = path+'vgg16_weights.h5'
 		model = VGG16(weights_path, img_width, img_height)
 	elif (model_type == 'vgg19'):
-		weights_path = 'vgg19_weights.h5'
+		weights_path = path+'vgg19_weights.h5'
 		model = VGG19(weights_path, img_width, img_height)
 	else:
 		print "Choose model_type vgg16 or vgg19."
@@ -202,8 +204,7 @@ def category_predict(input_image, model_type='vgg16', img_width=224, img_height=
 
 	idxs = np.argsort(out[0])[::-1][:k]
 	for x in idxs:
-		print(class_dict[x])
-		print out[0][x]
+		print(class_dict[x]), out[0][x]
 	return None
 
 
