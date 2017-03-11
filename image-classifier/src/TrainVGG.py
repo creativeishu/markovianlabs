@@ -4,6 +4,7 @@ Training the VGG16 or VGG19 architectures with new data
 
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
@@ -162,9 +163,9 @@ def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 	return model
 
 #==============================================================================
-
-xdata = np.load('/Users/mohammed/github/markovianlabs/image-classifier/data/101_ObjectCategories/xdata.npy')
-ydata = np.load('/Users/mohammed/github/markovianlabs/image-classifier/data/101_ObjectCategories/ydata.npy')
+folder = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/101_ObjectCategories/'%os.getlogin()
+xdata = np.load(folder+'xdata.npy')
+ydata = np.load(folder+'ydata.npy')
 
 n = int(len(xdata)/2)
 xtrain = xdata[:n]
