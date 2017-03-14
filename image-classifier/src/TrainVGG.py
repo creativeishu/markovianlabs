@@ -136,7 +136,7 @@ def VGG19(inputshape, nb_class=2):
 def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 		batch_size=32, nb_epoch=1, verbose=1, \
 		loss='binary_crossentropy', optimizer='adadelta', metrics=['accuracy'], \
-		save=False, savefilename='weights.h5'):
+		save=False, savefilename='weights.hdf5'):
 
 	inputshape = tuple(xtrain.shape[1:])
 	nb_class = ytrain.shape[1]
@@ -159,7 +159,7 @@ def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 		verbose=verbose, validation_data=(xvalid, yvalid))
 
 	if save:
-		model.save_weights(savefilename, overwrite=True)
+		model.save(savefilename, overwrite=True)
 	return model
 
 #==============================================================================
