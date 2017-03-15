@@ -17,8 +17,8 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 
-from keras import backend as K
-K.set_image_dim_ordering('th')
+# from keras import backend as K
+# K.set_image_dim_ordering('th')
 
 
 
@@ -26,7 +26,7 @@ __author__ = 'jverma'
 
 
 
-def VGG16(weights_path, img_width, img_height):
+def VGG16(weights_path, inputshape):
 	"""
 	Loads and builds the VGG16 model for object recognition.
 
@@ -41,7 +41,7 @@ def VGG16(weights_path, img_width, img_height):
 	pre-trained model.
 	"""
 	model = Sequential()
-	model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
+	model.add(ZeroPadding2D((1, 1), input_shape=inputshape))
 	model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
 	model.add(ZeroPadding2D((1, 1)))
 	model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
@@ -90,7 +90,7 @@ def VGG16(weights_path, img_width, img_height):
 
 
 
-def VGG19(weights_path, img_width, img_height):
+def VGG19(weights_path, inputshape):
 	"""
 	Loads and builds the VGG19 model for object recognition.
 
@@ -105,7 +105,7 @@ def VGG19(weights_path, img_width, img_height):
 	pre-trained model.
 	"""
 	model = Sequential()
-	model.add(ZeroPadding2D((1,1),input_shape=(3,img_width, img_height)))
+	model.add(ZeroPadding2D((1,1),input_shape=inputshape))
 	model.add(Convolution2D(64, 3, 3, activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
 	model.add(Convolution2D(64, 3, 3, activation='relu'))
@@ -182,18 +182,20 @@ def category_predict(input_image, model_type='vgg16', img_width=224, img_height=
 		class_dict[i] = record[1:]
 
 	im = cv2.resize(cv2.imread(input_image), (224, 224)).astype(np.float32)
-	im[:,:,0] -= 103.939
-	im[:,:,1] -= 116.779
-	im[:,:,2] -= 123.68
+	# im[:,:,0] -= 103.939
+	# im[:,:,1] -= 116.779
+	# im[:,:,2] -= 123.68
 	im = im.transpose((2,0,1))
 	im = np.expand_dims(im, axis=0)
+	inputshape = tuple(im.shape[1:])
+	print "Input Shape: ", inputshape
 
 	if (model_type == 'vgg16'):
 		weights_path = path+'vgg16_weights.h5'
-		model = VGG16(weights_path, img_width, img_height)
+		model = VGG16(weights_path, inputshape)
 	elif (model_type == 'vgg19'):
 		weights_path = path+'vgg19_weights.h5'
-		model = VGG19(weights_path, img_width, img_height)
+		model = VGG19(weights_path, inputshape)
 	else:
 		print "Choose model_type vgg16 or vgg19."
 		return None
