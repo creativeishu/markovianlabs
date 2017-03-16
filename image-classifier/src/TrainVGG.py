@@ -13,8 +13,8 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 
-from keras import backend as K
-K.set_image_dim_ordering('th')
+# from keras import backend as K
+# K.set_image_dim_ordering('th')
 
 from sys import exit
 __author__ = 'irshad'
@@ -80,7 +80,7 @@ def VGG19(inputshape, nb_class=2):
 
 	"""
 	model = Sequential()
-	model.add(ZeroPadding2D((1,1),input_shape=inputshape))
+	model.add(ZeroPadding2D((1,1), input_shape=inputshape))
 	model.add(Convolution2D(64, 3, 3, activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
 	model.add(Convolution2D(64, 3, 3, activation='relu'))
@@ -133,7 +133,7 @@ def VGG19(inputshape, nb_class=2):
 
 #==============================================================================
 
-def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
+def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 		batch_size=32, nb_epoch=1, verbose=1, \
 		loss='binary_crossentropy', optimizer='adadelta', metrics=['accuracy'], \
 		save=False, savefilename='weights.hdf5'):
@@ -142,7 +142,6 @@ def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 	nb_class = ytrain.shape[1]
 
 	print "Training set shape: ", xtrain.shape, ytrain.shape
-	print "Validation set shape: ", xvalid.shape, yvalid.shape
 
 	if vgg=='vgg19':
 		model = VGG19(inputshape, nb_class)
@@ -156,25 +155,19 @@ def trainvgg(xtrain, ytrain, xvalid, yvalid, vgg='vgg19', \
 
 	model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
 	model.fit(xtrain, ytrain, batch_size=batch_size, nb_epoch=nb_epoch, \
-		verbose=verbose, validation_data=(xvalid, yvalid))
+		verbose=verbose, validation_split=validation_split)
 
 	if save:
 		model.save(savefilename, overwrite=True)
 	return model
 
 #==============================================================================
+
 folder = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/101_ObjectCategories/'%os.getlogin()
 xdata = np.load(folder+'xdata.npy')
 ydata = np.load(folder+'ydata.npy')
 
-n = int(len(xdata)/2)
-xtrain = xdata[:n]
-xvalid = xdata[n:]
-ytrain = ydata[:n]
-yvalid = ydata[n:]
-
 vgg = 'vgg19'
-finalmodel = trainvgg(xtrain, ytrain, xvalid, yvalid, \
-	vgg=vgg, save=False)
+finalmodel = trainvgg(xdata, ydata, vgg=vgg, save=False)
 
 #==============================================================================
