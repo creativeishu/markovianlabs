@@ -16,7 +16,7 @@ from keras.optimizers import SGD
 # from keras import backend as K
 # K.set_image_dim_ordering('th')
 
-from sys import exit
+from sys import exit, argv
 __author__ = 'irshad'
 
 #==============================================================================
@@ -163,7 +163,9 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 
 #==============================================================================
 
-folder = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/101_ObjectCategories/'%os.getlogin()
+# folder = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/101_ObjectCategories/'%os.getlogin()
+
+folder = argv[1]
 xdata = np.load(folder+'xdata.npy')
 ydata = np.load(folder+'ydata.npy')
 
