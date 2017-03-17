@@ -12,6 +12,7 @@ from sys import argv
 folder = argv[1]
 X_train = np.load(folder+'xdata.npy')
 Y_train = np.load(folder+'ydata.npy')
+X_train = np.transpose(X_train, (0,3,1,2))
 print X_train.shape, Y_train.shape
 
 inputshape = X_train.shape[1:]
