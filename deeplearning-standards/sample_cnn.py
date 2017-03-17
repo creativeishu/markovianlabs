@@ -12,7 +12,7 @@ from sys import argv
 folder = argv[1]
 X_train = np.load(folder+'xdata.npy')
 Y_train = np.load(folder+'ydata.npy')
-X_train = np.transpose(X_train, (0,3,1,2))
+#X_train = np.transpose(X_train, (0,3,1,2))
 print X_train.shape, Y_train.shape
 
 inputshape = X_train.shape[1:]
@@ -43,5 +43,5 @@ simplemodel.compile(loss='binary_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
 print simplemodel.summary()
-simplemodel.fit(X_train, Y_train, batch_size=32, nb_epoch=1, \
+simplemodel.fit(X_train, Y_train, batch_size=32, nb_epoch=100, \
 	verbose=1, validation_split=0.4)
