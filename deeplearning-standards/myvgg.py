@@ -166,7 +166,9 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 folder = argv[1]
 xdata = np.load(folder+'xdata.npy')
 ydata = np.load(folder+'ydata.npy')
-xdata = np.transpose(xdata, (0, 2,3,1))
+#xdata = np.transpose(xdata, (0, 2,3,1))
+xdata = xdata.astype('float32')
+xdata /= 255
 
 vgg = 'vgg19'
 savefile = folder+'savedmodels/firstmodel.hdf5'

@@ -9,10 +9,11 @@ import os
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.layers import ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.layers.convolutional import Conv2D
+from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import SGD
-from keras.initializers import random_normal
 
 from sys import exit, argv
 __author__ = 'irshad'
@@ -26,45 +27,45 @@ def VGG16(inputshape, nb_class=2):
 	"""
 	model = Sequential()
 	model.add(ZeroPadding2D((1,1),input_shape=inputshape))
-	model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(64, (3, 3), activation='relu', name='conv1_1'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(64, (3, 3), activation='relu', name='conv1_2'))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(128, (3, 3), activation='relu', name='conv2_1'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(128, (3, 3), activation='relu', name='conv2_2'))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu', name='conv3_1'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu', name='conv3_2'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu', name='conv3_3'))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv4_1'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv4_2'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv4_3'))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv5_1'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv5_2'))
 	model.add(ZeroPadding2D((1, 1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu', name='conv5_3'))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 	model.add(Flatten())
-	model.add(Dense(4096, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Dense(4096, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(4096, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Dense(4096, activation='relu'))
 	model.add(Dropout(0.5))
 	model.add(Dense(nb_class, activation='softmax'))
 
@@ -79,51 +80,51 @@ def VGG19(inputshape, nb_class=2):
 	"""
 	model = Sequential()
 	model.add(ZeroPadding2D((1,1), input_shape=inputshape))
-	model.add(Convolution2D(64, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(64, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(64, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(64, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(128, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(128, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(128, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(128, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(256, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(256, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(ZeroPadding2D((1,1)))
-	model.add(Convolution2D(512, 3, 3, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Conv2D(512, (3, 3), activation='relu'))
 	model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 	model.add(Flatten())
-	model.add(Dense(4096, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Dense(4096, activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(4096, activation='relu', kernel_initializer=random_normal(stddev=0.01)))
+	model.add(Dense(4096, activation='relu'))
 	model.add(Dropout(0.5))
 	model.add(Dense(nb_class, activation='softmax'))
 
@@ -149,11 +150,11 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 		print "Enter a valid vgg model: either vgg16 or vgg19"
 		exit()
 
-	print model.summary()
+	# print model.summary()
 	sgd = optimizers.SGD(lr=0.01, momentum=0.9, decay=1e-6)
 
 	model.compile(loss=loss, optimizer=sgd, metrics=metrics)
-	model.fit(xtrain, ytrain, batch_size=batch_size, nb_epoch=nb_epoch, \
+	model.fit(xtrain, ytrain, batch_size=batch_size, epochs=nb_epoch, \
 		verbose=verbose, validation_split=validation_split)
 
 	if save:
@@ -162,15 +163,16 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 
 #==============================================================================
 
-# folder = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/101_ObjectCategories/'%os.getlogin()
-
 folder = argv[1]
 xdata = np.load(folder+'xdata.npy')
 ydata = np.load(folder+'ydata.npy')
-xdata = np.transpose(xdata, (0, 3, 1, 2))
+#xdata = np.transpose(xdata, (0, 2,3,1))
+xdata = xdata.astype('float32')
+xdata /= 255
 
 vgg = 'vgg19'
 savefile = folder+'savedmodels/firstmodel.hdf5'
-finalmodel = trainvgg(xdata, ydata, vgg=vgg, nb_epoch=100, validation_split=0.5, save=True, savefilename=savefile)
+finalmodel = trainvgg(xdata, ydata, vgg=vgg, nb_epoch=50, \
+	validation_split=0.5, save=True, savefilename=savefile)
 
 #==============================================================================
