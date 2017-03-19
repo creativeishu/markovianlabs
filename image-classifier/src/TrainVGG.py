@@ -150,7 +150,7 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 		print "Enter a valid vgg model: either vgg16 or vgg19"
 		exit()
 
-	# print model.summary()
+	print model.summary()
 	sgd = optimizers.SGD(lr=0.01, momentum=0.9, decay=1e-6)
 
 	model.compile(loss=loss, optimizer=sgd, metrics=metrics)
