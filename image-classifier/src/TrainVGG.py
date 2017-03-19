@@ -14,6 +14,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import SGD
+from keras import backend as K
 
 from sys import exit, argv
 __author__ = 'irshad'
@@ -137,10 +138,22 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 		loss='binary_crossentropy', optimizer='adadelta', metrics=['accuracy'], \
 		save=False, savefilename='weights.hdf5'):
 
-	inputshape = tuple(xtrain.shape[1:])
-	nb_class = ytrain.shape[1]
+	if (K.image_data_format()=='channels_last') and xtrain.shape[1]==3:
+		xtrain = np.transpose(xtrain, (0, 2, 3, 1))
+	elif (K.image_data_format()=='channels_first') and xtrain.shape[3]==3:
+		xtrain = np.transpose(xtrain, (0, 3, 1, 2))
 
-	print "Training set shape: ", xtrain.shape, ytrain.shape
+	inputshape = xtrain.shape[1:]
+	nb_class = ytrain.shape[1]
+	xtrain = xtrain.astype('float32')
+	xtrain /= 255.0
+
+	print "============================================"
+	print "Data Format: ", K.image_data_format()
+	print "Data shape", xtrain.shape, ytrain.shape
+	print "Input shape: ", inputshape
+	print "Number of classes: ", nb_class
+	print "============================================"
 
 	if vgg=='vgg19':
 		model = VGG19(inputshape, nb_class)
@@ -166,9 +179,6 @@ def trainvgg(xtrain, ytrain, validation_split=0.4, vgg='vgg19', \
 folder = argv[1]
 xdata = np.load(folder+'xdata.npy')
 ydata = np.load(folder+'ydata.npy')
-#xdata = np.transpose(xdata, (0, 2,3,1))
-xdata = xdata.astype('float32')
-xdata /= 255
 
 vgg = 'vgg19'
 savefile = folder+'savedmodels/firstmodel.hdf5'
