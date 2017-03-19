@@ -12,7 +12,7 @@ from sys import argv
 folder = argv[1]
 X_train = np.load(folder+'xdata.npy')
 Y_train = np.load(folder+'ydata.npy')
-#X_train = np.transpose(X_train, (0,3,1,2))
+# X_train = np.transpose(X_train, (0,3,1,2))
 print X_train.shape, Y_train.shape
 
 inputshape = X_train.shape[1:]
@@ -22,15 +22,17 @@ print "shape: ", inputshape, nclass
 simplemodel = Sequential()
 simplemodel.add(Convolution2D(32, 3, 3, input_shape=inputshape))
 simplemodel.add(Activation('relu'))
-simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
+# simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-simplemodel.add(Convolution2D(32, 3, 3))
-simplemodel.add(Activation('relu'))
-simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
+# simplemodel.add(Convolution2D(32, 3, 3))
+# simplemodel.add(Activation('relu'))
+# simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-simplemodel.add(Convolution2D(64, 3, 3))
-simplemodel.add(Activation('relu'))
-simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
+# simplemodel.add(Convolution2D(64, 3, 3))
+# simplemodel.add(Activation('relu'))
+# simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
+
+print simplemodel.output_shape
 
 simplemodel.add(Flatten())
 simplemodel.add(Dense(64))

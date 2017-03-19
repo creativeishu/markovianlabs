@@ -4,22 +4,19 @@ import numpy as np
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import optimizers
+from keras.layers.convolutional import Conv2D
+from keras.layers.pooling import MaxPooling2D
+from sys import argv, exit
 
-#from keras import backend as K
-#K.set_image_dim_ordering('th')
 
 # dimensions of our images.
 img_width, img_height = 150, 150
 
-folder = '/data/mohammed/data/catsdogs/'
+folder = argv[1]
 train_data_dir = folder+'train'
 validation_data_dir = folder+'validation'
-
-#weights_path = 'data/vgg16_weights.h5'
-#top_model_weights_path = folder+'savedmodels/bottleneck_fc_model.h5'
 
 nb_train_samples = 2222
 nb_validation_samples = 1222
@@ -29,15 +26,15 @@ nb_epoch = 50 # originally 50
 nb_class = 2
 
 simplemodel = Sequential()
-simplemodel.add(Convolution2D(32, 3, 3, input_shape=(3, img_width, img_height)))
+simplemodel.add(Conv2D(32, (3, 3), input_shape=(img_width, img_height, 3)))
 simplemodel.add(Activation('relu'))
 simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-simplemodel.add(Convolution2D(32, 3, 3))
+simplemodel.add(Conv2D(32, (3, 3)))
 simplemodel.add(Activation('relu'))
 simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-simplemodel.add(Convolution2D(64, 3, 3))
+simplemodel.add(Conv2D(64, (3, 3)))
 simplemodel.add(Activation('relu'))
 simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -77,9 +74,13 @@ validation_generator = test_datagen.flow_from_directory(
         class_mode='binary')
 
 print simplemodel.summary()
-simplemodel.fit_generator(
-        train_generator,
-        samples_per_epoch=nb_train_samples,
-        nb_epoch=nb_epoch,
-        validation_data=validation_generator,
-        nb_val_samples=nb_validation_samples)
+# simplemodel.fit_generator(
+#         train_generator,
+#         samples_per_epoch=nb_train_samples,
+#         nb_epoch=nb_epoch,
+#         validation_data=validation_generator,
+#         nb_val_samples=nb_validation_samples)
+
+simplemodel.fit_generator(generator=train_generator, validation_data=validation_generator, \
+    steps_per_epoch=nb_train_samples, epochs=50, validation_steps=nb_validation_samples)
+
