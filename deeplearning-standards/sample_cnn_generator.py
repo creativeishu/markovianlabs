@@ -82,5 +82,4 @@ print simplemodel.summary()
 #         nb_val_samples=nb_validation_samples)
 
 simplemodel.fit_generator(generator=train_generator, validation_data=validation_generator, \
-    steps_per_epoch=nb_train_samples, epochs=50, validation_steps=nb_validation_samples)
-
+    steps_per_epoch=35, epochs=50, validation_steps=10)
