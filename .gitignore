@@ -4,4 +4,5 @@
 data/
 *checkpoints*
 irshad/
-*.script
+*script*
+*.log
