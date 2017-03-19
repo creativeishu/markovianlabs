@@ -48,3 +48,5 @@ simplemodel.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['a
 print "Model loaded and compiled"
 
 simplemodel.fit(X_train, Y_train, batch_size=32, epochs=100, verbose=1, validation_split=0.4)
+savefilename = folder+'savedmodels/firstattempt.hdf5'
+simplemodel.save(savefilename, overwrite=True)
