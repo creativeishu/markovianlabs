@@ -15,7 +15,7 @@ X_train = np.load(folder+'xdata.npy')
 Y_train = np.load(folder+'ydata.npy')
 X_train = np.transpose(X_train, (0,2,3,1))
 
-X_train = X_train.astype('float32')
+#X_train = X_train.astype('float32')
 X_train /= 255
 
 inputshape = X_train.shape[1:]
