@@ -20,10 +20,10 @@ __author__ = 'irshad'
 folder = argv[1]
 train_data_dir = folder+'train'
 validation_data_dir = folder+'validation'
-savefilename = folder+'savedmodels/firstattempt.hdf5'
+savefilename = folder+'savedmodels/firstattempt_generator.hdf5'
 
 img_width, img_height = 150, 150
-nb_epoch = 50
+nb_epoch = 150
 
 # nb_class = 2
 if (K.image_data_format()=='channels_last'):
@@ -80,6 +80,6 @@ validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
 
 simplemodel.fit_generator(train_generator, validation_data=validation_generator, \
 	steps_per_epoch=10, epochs=nb_epoch, validation_steps=2)
-# simplemodel.save(savefilename, overwrite=True)
+simplemodel.save(savefilename, overwrite=True)
 
 #==============================================================================
