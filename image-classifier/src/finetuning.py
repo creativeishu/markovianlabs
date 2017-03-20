@@ -116,7 +116,7 @@ if Train_bottleneck:
             batch_size=16,
             class_mode=None,
             shuffle=False)
-    bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
+    bottleneck_features_train = base_model.predict_generator(generator, nb_train_samples)
     np.save(open(folder+'savedmodels/bottleneck_features_train.npy', 'w'), \
     	bottleneck_features_train)
 
@@ -126,7 +126,7 @@ if Train_bottleneck:
             batch_size=16,
             class_mode=None,
             shuffle=False)
-    bottleneck_features_validation = model.predict_generator(generator, nb_validation_samples)
+    bottleneck_features_validation = base_model.predict_generator(generator, nb_validation_samples)
     np.save(open(folder+'savedmodels/bottleneck_features_validation.npy', 'w'), \
     	bottleneck_features_validation)
 
@@ -182,7 +182,7 @@ top_model.add(Dense(1, activation='sigmoid'))
 top_model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
 print top_model.summary()
 top_model.fit(train_data, train_labels,
-          epochs=5, batch_size=batch_size,
+          epochs=50, batch_size=batch_size,
           validation_data=(validation_data, validation_labels))
 print
 
