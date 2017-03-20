@@ -24,12 +24,12 @@ validation_data_dir = folder+'validation'
 weights_path = folder+'../vggfiles/vgg16_weights.h5'
 
 nb_class = 2
-img_width, img_height = 224, 224
+img_width, img_height = 150, 150
 nb_train_samples = 2222
 nb_validation_samples = 1222
 
 # bottleneck training parameters
-Train_bottleneck = True
+Train_bottleneck = False
 nb_filters = 32
 batch_size = 32
 n_epoch = 50
@@ -132,7 +132,7 @@ top_model.add(Dense(1, activation='sigmoid'))
 top_model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
 print top_model.summary()
 top_model.fit(train_data, train_labels,
-          epochs=5, batch_size=batch_size,
+          epochs=100, batch_size=batch_size,
           validation_data=(validation_data, validation_labels))
 print
 
