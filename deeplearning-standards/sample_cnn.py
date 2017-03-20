@@ -69,7 +69,7 @@ print simplemodel.summary()
 #==============================================================================
 
 simplemodel.fit(X_train, Y_train, batch_size=32, \
-	epochs=100, verbose=1, validation_split=0.4)
+	epochs=50, verbose=1, validation_split=0.2)
 simplemodel.save(savefilename, overwrite=True)
 
 #==============================================================================
