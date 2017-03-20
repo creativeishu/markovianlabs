@@ -13,9 +13,9 @@ folder = argv[1]
 
 top_model_weights_path = folder+'savedmodels/topmodel.h5'
 train_data_dir = folder+'train'
-validation_data_dir = 'validation'
-nb_train_samples = 2222
-nb_validation_samples = 1222
+validation_data_dir = folder+'validation'
+nb_train_samples = 2208
+nb_validation_samples = 1216
 epochs = 50
 batch_size = 16
 
@@ -52,11 +52,11 @@ def save_bottlebeck_features():
 
 
 def train_top_model():
-    train_data = np.load(open('bottleneck_features_train.npy'))
+    train_data = np.load(open(folder+'savedmodels/bottleneck_features_train.npy'))
     train_labels = np.array(
         [0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
 
-    validation_data = np.load(open('bottleneck_features_validation.npy'))
+    validation_data = np.load(open(folder+'savedmodels/bottleneck_features_validation.npy'))
     validation_labels = np.array(
         [0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
 
@@ -77,5 +77,5 @@ def train_top_model():
     model.save_weights(top_model_weights_path)
 
 
-save_bottlebeck_features()
+#save_bottlebeck_features()
 train_top_model()
