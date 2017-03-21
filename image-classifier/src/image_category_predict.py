@@ -6,11 +6,7 @@ from sys import exit, argv
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg19 import VGG19
 
-# from keras.backend import backend
-# from keras.backend import image_dim_ordering as K
-# print backend()
-# print K()
-# exit()
+from keras.optimizers import SGD
 
 #==============================================================================
 
@@ -22,11 +18,14 @@ class Imagepredict(object):
 	def __init__(self, model='vgg19'):
 
 		self.dict = self.get_dict()
+		sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 
 		if model=='vgg19':
 			self.model = VGG19(weights='imagenet', include_top=True)
+			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
 		elif model=='vgg16':
 			self.model = VGG16(weights='imagenet', include_top=True)
+			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
 		else:
 			print "Only two models are available: VGG16 or VGG19"
 			exit()
@@ -42,8 +41,12 @@ class Imagepredict(object):
 			class_dict[i] = record[1:]
 		return class_dict
 
+
 	def get_image_input(self, imagepath, shape=(224, 224)):
 		im = cv2.resize(cv2.imread(imagepath), shape).astype(np.float32)
+		im[:,:,0] -= 103.939
+		im[:,:,1] -= 116.779
+		im[:,:,2] -= 123.68
 		im = np.expand_dims(im, axis=0)
 		return im
 
@@ -56,7 +59,6 @@ class Imagepredict(object):
 			print(self.dict[x]), out[0][x]
 
 #==============================================================================	
-
 
 if len(argv)==2:
 	input_image = argv[1]
