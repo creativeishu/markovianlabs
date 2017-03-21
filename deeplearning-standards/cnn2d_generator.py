@@ -73,13 +73,13 @@ train_datagen = ImageDataGenerator(rescale=1./255, shear_range=0.2, \
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(train_data_dir, \
-	target_size=(img_width, img_height), batch_size=32, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=256, class_mode='binary')
 
 validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
-	target_size=(img_width, img_height), batch_size=32, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=256, class_mode='binary')
 
 simplemodel.fit_generator(train_generator, validation_data=validation_generator, \
-	steps_per_epoch=10, epochs=nb_epoch, validation_steps=2)
+	steps_per_epoch=58787//32, epochs=nb_epoch, validation_steps=28919/32)
 simplemodel.save(savefilename, overwrite=True)
 
 #==============================================================================
