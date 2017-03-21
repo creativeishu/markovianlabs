@@ -18,10 +18,11 @@ from sys import argv, exit
 
 #==============================================================================
 
-folder = argv[1]
+path = argv[1]
+folder = path+'savedmodels/'
 
-train_data_dir = folder+'train'
-validation_data_dir = folder+'validation'
+train_data_dir = path+'train'
+validation_data_dir = path+'validation'
 
 nb_class = 2
 img_width, img_height = 150, 150
@@ -29,8 +30,8 @@ nb_train_samples = 2222
 nb_validation_samples = 1222
 
 # bottleneck training parameters
-Train_bottleneck = True
-Train_topmodel = True
+Train_bottleneck = False
+Train_topmodel = False
 
 batch_size = 16
 n_epoch = 50
@@ -61,7 +62,7 @@ def save_bottlebeck_features():
         shuffle=False)
     bottleneck_features_train = model.predict_generator(
         generator, nb_train_samples // batch_size)
-    np.save(open(folder+'savedmodels/bottleneck_features_train.npy', 'w'),
+    np.save(open(folder+'bottleneck_features_train.npy', 'w'),
             bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
@@ -72,19 +73,19 @@ def save_bottlebeck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
         generator, nb_validation_samples // batch_size)
-    np.save(open(folder+'savedmodels/bottleneck_features_validation.npy', 'w'),
+    np.save(open(folder+'bottleneck_features_validation.npy', 'w'),
             bottleneck_features_validation)
 
 #------------------------------------------------------------------------------
 
 def train_top_model():
-    train_data = np.load(open(folder+'savedmodels/bottleneck_features_train.npy'))
+    train_data = np.load(open(folder+'bottleneck_features_train.npy'))
     nb_train_samples = len(train_data)
     train_labels = []
     for i in range(nb_class):
         train_labels +=  list([i] * (nb_train_samples / nb_class))
 
-    validation_data = np.load(open(folder+'savedmodels/bottleneck_features_validation.npy'))
+    validation_data = np.load(open(folder+'bottleneck_features_validation.npy'))
     nb_validation_samples = len(validation_data)
     validation_labels = []
     for i in range(nb_class):
@@ -108,7 +109,7 @@ def train_top_model():
               epochs=n_epoch,
               batch_size=batch_size,
               validation_data=(validation_data, validation_labels))
-    model.save(folder+'savedmodels/top_model.hdf5')
+    model.save(folder+'top_model.hdf5')
     return model
 
 #==============================================================================
@@ -119,8 +120,8 @@ if Train_bottleneck:
 if Train_topmodel:    
     top_model = train_top_model()
 else:
-    top_model = load_model(folder+'savedmodels/top_model.hdf5')
-exit()
+    top_model = load_model(folder+'top_model.hdf5')
+
 #==============================================================================
 
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=inputshape)
@@ -173,6 +174,7 @@ print
 
 model.fit_generator(train_generator, steps_per_epoch=nb_train_samples // batch_size, \
     epochs=n_epoch, validation_data=validation_generator, validation_steps=nb_validation_samples // batch_size)
+model.save(folder+'finetunedmodel.hdf5')
 
 #==============================================================================
 
