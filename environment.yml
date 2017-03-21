@@ -1,0 +1,11 @@
+name: markovianlabs
+dependencies:
+- python=2.7
+- anaconda
+- numpy
+- pandas
+- scikit-learn
+- ipython
+- pip:
+    - theano
+    - keras

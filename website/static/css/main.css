@@ -1,0 +1,33 @@
+.header{
+	width: 1400px;
+	height: 150px;
+	margin-left: auto;
+	margin-top: 2%;
+	margin-right: auto;
+	color: white;
+	background-color: #386665;
+	font: 30px economica;
+}
+
+.upload_form{
+	margin-top: 10%;
+	margin-left: 10%;
+	margin-right: 10%
+
+}
+
+
+.sample_images{
+	position: absolute;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 50%;
+}
+
+
+.result{
+	position: absolute;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 15%
+}
