@@ -9,7 +9,7 @@ import subprocess
 
 from image_category_predict import Imagepredict
 
-
+ob = Imagepredict()
 
 UPLOAD_FOLDER = 'Uploads'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
@@ -53,7 +53,7 @@ def upload_file():
 		image_file = request.files['image_file']
 		imageFileName = save_to_disk(image_file)
 		
-		ob = Imagepredict()
+		# ob = Imagepredict()
 		res = ob.predict_image(os.path.join(app.config['UPLOAD_FOLDER'], imageFileName))
 		return jsonify(file_name=imageFileName, res=res)
 	else:
