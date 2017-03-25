@@ -108,3 +108,7 @@ model.fit(X_train, Y_train, batch_size=batchsize, epochs=nepoch, verbose=1, \
 	validation_split=val_split)
 
 #==============================================================================
+
+model.save(savefilename, overwrite=True)
+
+#==============================================================================

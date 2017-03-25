@@ -6,3 +6,4 @@ data/
 irshad/
 website/Uploads/
 *.log
+*batch*
