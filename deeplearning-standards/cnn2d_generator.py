@@ -62,7 +62,7 @@ simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 simplemodel.add(Flatten())
 simplemodel.add(Dense(64, activation='relu'))
 simplemodel.add(Dropout(0.5))
-simplemodel.add(Dense(1, activation='sigmoid'))
+simplemodel.add(Dense(15, activation='sigmoid'))
 
 simplemodel.compile(loss='binary_crossentropy', \
 	optimizer='adadelta', metrics=['accuracy'])
@@ -78,10 +78,10 @@ train_datagen = ImageDataGenerator(rescale=1./255, shear_range=0.2, \
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(train_data_dir, \
-	target_size=(img_width, img_height), batch_size=batch_size, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=batch_size, class_mode='categorical')
 
 validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
-	target_size=(img_width, img_height), batch_size=batch_size, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=batch_size, class_mode='categorical')
 
 simplemodel.fit_generator(train_generator, validation_data=validation_generator, \
 	steps_per_epoch=train_samples//batch_size, epochs=nb_epoch, \
