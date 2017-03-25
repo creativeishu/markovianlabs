@@ -24,6 +24,7 @@ savefilename = folder+'savedmodels/firstattempt_generator.hdf5'
 
 img_width, img_height = 150, 150
 nb_epoch = 150
+batch_size = 64
 
 # nb_class = 2
 if (K.image_data_format()=='channels_last'):
@@ -73,13 +74,14 @@ train_datagen = ImageDataGenerator(rescale=1./255, shear_range=0.2, \
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(train_data_dir, \
-	target_size=(img_width, img_height), batch_size=256, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=batch_size, class_mode='binary')
 
 validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
-	target_size=(img_width, img_height), batch_size=256, class_mode='binary')
+	target_size=(img_width, img_height), batch_size=batch_size, class_mode='binary')
 
 simplemodel.fit_generator(train_generator, validation_data=validation_generator, \
-	steps_per_epoch=58787//32, epochs=nb_epoch, validation_steps=28919/32)
+	steps_per_epoch=2222//batch_size, epochs=nb_epoch, \
+	validation_steps=1222/batch_size)
 simplemodel.save(savefilename, overwrite=True)
 
 #==============================================================================
