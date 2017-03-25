@@ -22,7 +22,7 @@ batchsize = 512
 loss = 'mean_squared_error'
 optimizer = 'adadelta'
 inputfilename = folder+"/CMASS_50features_irshad.csv"
-savefilename = folder+'/model_%i_%i_%s.hdf5'%(nlayers, nf, act)
+savefilename = folder+'/model_newalgo_firsttry.hdf5'
 val_split = 0.5
 
 #==============================================================================
