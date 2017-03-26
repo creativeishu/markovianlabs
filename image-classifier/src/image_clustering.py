@@ -1,3 +1,8 @@
+"""
+Organize your images into a fixed number of groups.
+Next: Find a way to compute number of clusters.
+"""
+
 import os
 import h5py
 import cv2
@@ -22,6 +27,15 @@ class_model = Imagepredict()
 
 def classify_photos(input_dir):
 	"""
+	Obtains classes for the images in the directory.
+
+	Parameters
+	----------
+	input_dir: Path to the directory containing the images.
+
+	Returns
+	-------
+	A dictionary containing the file names and the list of top 5 corresponding categories.
 	"""
 	category_predictions = {}
 	# vocab = []
@@ -44,6 +58,16 @@ def classify_photos(input_dir):
 
 def cluster_photos(input_dir, k=20):
 	"""
+	Clusters the images in the directory based on thei categories.
+
+	Parameters
+	----------
+	input_dir: Path to the directory containing the images.
+	k: Number of clusters.
+
+	Returns
+	-------
+	A dictionary containing the cluster indices and files in the clusters.
 	"""
 	classification_results = classify_photos(input_dir)
 	image_names = classification_results.keys()
@@ -65,6 +89,12 @@ def cluster_photos(input_dir, k=20):
 
 def organize_photos(input_dir, k=10):
 	"""
+	Groups the images into different folders.
+
+	Parameters
+	----------
+	input_dir: Path to the directory containing the images.
+	k: Number of clusters.
 	"""
 	image_cluster_labels = cluster_photos(input_dir, k=k)
 	for idx in image_cluster_labels:
