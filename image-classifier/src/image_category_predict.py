@@ -55,16 +55,20 @@ class Imagepredict(object):
 		im = self.get_image_input(imagepath)
 		out = self.model.predict(im)
 		idxs = np.argsort(out[0])[::-1][:k]
+		# results = [['class', 'prob']]
+		results = []
 		for x in idxs:
-			print(self.dict[x]), out[0][x]
+			 category = [self.dict[x], float(out[0][x])]
+			 results.append(category)
+		return results
 
 #==============================================================================	
-
+"""
 if len(argv)==2:
 	input_image = argv[1]
 	ob = Imagepredict()
 	ob.predict_image(input_image)
 else:
 	print "Usage: python <script.py> <image_file_path>"
-
+"""
 #==============================================================================
