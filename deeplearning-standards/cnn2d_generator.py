@@ -20,17 +20,17 @@ __author__ = 'irshad'
 folder = argv[1]
 train_data_dir = folder+'train'
 validation_data_dir = folder+'validation'
-savefilename = folder+'savedmodels/firstattempt_generator.hdf5'
+savefilename = folder+'savedmodels/cnn_small.hdf5'
 
 img_width, img_height = 150, 150
-nb_epoch = 150
-batch_size = 64
+nb_epoch = 50
+batch_size = 256
 
 train_samples = 58787
 valid_samples = 28919
 
+nb_class = 15
 
-# nb_class = 2
 if (K.image_data_format()=='channels_last'):
 	inputshape = (img_width, img_height, 3)
 elif (K.image_data_format()=='channels_first'):
@@ -62,7 +62,7 @@ simplemodel.add(MaxPooling2D(pool_size=(2, 2)))
 simplemodel.add(Flatten())
 simplemodel.add(Dense(64, activation='relu'))
 simplemodel.add(Dropout(0.5))
-simplemodel.add(Dense(15, activation='sigmoid'))
+simplemodel.add(Dense(nb_class, activation='sigmoid'))
 
 simplemodel.compile(loss='binary_crossentropy', \
 	optimizer='adadelta', metrics=['accuracy'])
