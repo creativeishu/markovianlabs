@@ -138,7 +138,7 @@ def trainvgg(path_train, path_valid, train_samples, valid_samples, vgg='vgg19', 
 		loss='binary_crossentropy', optimizer='adadelta', metrics=['accuracy'], \
 		save=False, savefilename='weights.hdf5'):
 
-	img_width, img_height = 150, 150
+	img_width, img_height = 224, 224
 	if (K.image_data_format()=='channels_last'):
 		inputshape = (img_width, img_height, 3)
 	elif (K.image_data_format()=='channels_first'):
@@ -192,10 +192,16 @@ folder = argv[1]
 train_data_dir = folder+'train'
 validation_data_dir = folder+'validation'
 savefilename = folder+'savedmodels/firstattempt_vgg_generator.hdf5'
+ntrain = 58787
+nvalid = 28919
+nb_class = 15
+batch_size = 32
+nb_epoch = 50
 
 vgg = 'vgg19'
 finalmodel = trainvgg(train_data_dir, validation_data_dir, \
-	58787, 28919, vgg=vgg, nb_class=15, batch_size=1024, nb_epoch=1, \
+	ntrain, nvalid, vgg=vgg, nb_class=nb_class, batch_size=batch_size, \
+	nb_epoch=nb_epoch, \
 	save=True, savefilename=savefilename)
 
 #==============================================================================
