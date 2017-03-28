@@ -5,8 +5,8 @@ from sys import exit, argv
 
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg19 import VGG19
-
 from keras.optimizers import SGD
+from keras.models import load_model
 
 #==============================================================================
 
@@ -15,17 +15,17 @@ class Imagepredict(object):
 	Some comments
 	"""
 
-	def __init__(self, model='vgg19'):
+	def __init__(self, modelpath=None, model='vgg19'):
 
 		self.dict = self.get_dict()
-		sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 
-		if model=='vgg19':
+		if modelpath==None and model=='vgg19':
 			self.model = VGG19(weights='imagenet', include_top=True)
-			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
-		elif model=='vgg16':
+		elif modelpath==None and model=='vgg16':
 			self.model = VGG16(weights='imagenet', include_top=True)
-			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
+		elif modelpath != None:
+			print "Loading model from: ", modelpath
+			self.model = load_model(modelpath)
 		else:
 			print "Only two models are available: VGG16 or VGG19"
 			exit()
@@ -65,11 +65,16 @@ class Imagepredict(object):
 #==============================================================================	
 
 if __name__ == "__main__":
-	if len(argv)==2:
-		input_image = argv[1]
-		ob = Imagepredict()
-		print ob.predict_image(input_image)
+
+	if len(argv)==3:
+		modelpath = argv[2]
+	elif len(argv)==2:
+		modelpath=None
 	else:
-		print "Usage: python <script.py> <image_file_path>"
+		print "Usage: python <script.py> <image_file_path> <model_path>(optional)"
+		exit()
+	input_image = argv[1]
+	ob = Imagepredict(modelpath, model='vgg19')
+	print ob.predict_image(input_image)
 
 #==============================================================================

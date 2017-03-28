@@ -1,4 +1,5 @@
 import numpy as np 
+import matplotlib.pyplot as plt 
 import os
 import cv2
 from sys import exit, argv
@@ -17,29 +18,14 @@ class Imagepredict(object):
 
 	def __init__(self, model='vgg19'):
 
-		self.dict = self.get_dict()
-		sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-
 		if model=='vgg19':
-			self.model = VGG19(weights='imagenet', include_top=True)
-			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
+			self.model = VGG19(weights='imagenet', include_top=False)
 		elif model=='vgg16':
-			self.model = VGG16(weights='imagenet', include_top=True)
-			self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
+			self.model = VGG16(weights='imagenet', include_top=False)
 		else:
 			print "Only two models are available: VGG16 or VGG19"
 			exit()
 		print "Class is initialised!!!"
-
-
-	def get_dict(self):
-		path = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/vggfiles/'%os.getlogin()
-		class_dict = {}
-		index_file = open(path+'synset_words.txt')
-		for i,line in enumerate(index_file):
-			record = line.rstrip().split(' ')
-			class_dict[i] = record[1:]
-		return class_dict
 
 
 	def get_image_input(self, imagepath, shape=(224, 224)):
@@ -51,16 +37,10 @@ class Imagepredict(object):
 		return im
 
 
-	def predict_image(self, imagepath, k=5):
+	def get_features(self, imagepath, k=5):
 		im = self.get_image_input(imagepath)
 		out = self.model.predict(im)
-		idxs = np.argsort(out[0])[::-1][:k]
-		# results = [['class', 'prob']]
-		results = []
-		for x in idxs:
-			 category = [self.dict[x], float(out[0][x])]
-			 results.append(category)
-		return results
+		return np.ndarray.flatten(out)
 
 #==============================================================================	
 
@@ -68,7 +48,10 @@ if __name__ == "__main__":
 	if len(argv)==2:
 		input_image = argv[1]
 		ob = Imagepredict()
-		print ob.predict_image(input_image)
+		out = ob.get_features(input_image)
+		plt.plot(out)
+		plt.show()
+
 	else:
 		print "Usage: python <script.py> <image_file_path>"
 
