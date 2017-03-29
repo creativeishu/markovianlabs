@@ -18,18 +18,25 @@ __author__ = 'irshad'
 
 #==============================================================================
 
-folder = argv[1]
-train_data_dir = folder+'train'
-validation_data_dir = folder+'validation'
-savefilename = folder+'savedmodels/cnn_small.hdf5'
+if len(argv)<2 or len(argv)>3:
+	print "Usage: python cnn2d_generator.py <train_path> <validation_path (OPTIONAL)>"
+	exit()
+elif len(argv)==2:
+	train_data_dir = argv[1]
+	validation_data_dir = None
+else:
+	train_data_dir = argv[1]
+	validation_data_dir = argv[2]
+
 
 img_width, img_height = 224, 224
 nb_epoch = 50
 batch_size = 32
 nfilters = 64
-nlayers = 2
+nlayers = 3
 nchannels = 3
 savemodel = True
+savefilename = train_data_dir.replace('train/', 'savedmodels/cnn_small.hdf5')
 
 loss = 'binary_crossentropy'
 optimizer = 'adadelta'
@@ -50,19 +57,20 @@ else:
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(rescale=1./255, shear_range=0.2, \
 	zoom_range=0.2, horizontal_flip=True)
-test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(train_data_dir, \
 	target_size=(img_width, img_height), batch_size=batch_size, \
 	class_mode='categorical')
-
-validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
-	target_size=(img_width, img_height), batch_size=batch_size, \
-	class_mode='categorical')
-
 train_samples = train_generator.samples 
-valid_samples = validation_generator.samples
 nb_class = max(train_generator.classes)+1
+
+
+if validation_data_dir != None:
+	test_datagen = ImageDataGenerator(rescale=1./255)
+	validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
+		target_size=(img_width, img_height), batch_size=batch_size, \
+		class_mode='categorical')
+	valid_samples = validation_generator.samples
 
 #==============================================================================
 
@@ -85,7 +93,8 @@ print "============================================"
 print "Data Format: ", K.image_data_format()
 print "Input shape: ", inputshape
 print "Number of training samples: ", train_samples
-print "Number of validation samples: ", valid_samples
+if validation_data_dir != None:
+	print "Number of validation samples: ", valid_samples
 print "Number of classes: ", nb_class
 print "Number of convolutional layers: ", nlayers
 print "Batch size: ", batch_size
@@ -99,11 +108,13 @@ print "============================================"
 print model.summary()
 
 #==============================================================================
-
-model.fit_generator(train_generator, validation_data=validation_generator, \
-	steps_per_epoch=train_samples//batch_size, epochs=nb_epoch, \
-	validation_steps=valid_samples/batch_size)
-
+if validation_data_dir != None:
+	model.fit_generator(train_generator, validation_data=validation_generator, \
+		steps_per_epoch=train_samples//batch_size, epochs=nb_epoch, \
+		validation_steps=valid_samples/batch_size)
+else:
+	model.fit_generator(train_generator, \
+		steps_per_epoch=train_samples//batch_size, epochs=nb_epoch)	
 if savemodel:
 	model.save(savefilename, overwrite=True)
 
