@@ -15,38 +15,33 @@ class Imagepredict(object):
 	Some comments
 	"""
 
-	def __init__(self, modelpath=None, model='vgg19'):
-
-		self.dict = self.get_dict()
-
-		if modelpath==None and model=='vgg19':
-			self.model = VGG19(weights='imagenet', include_top=True)
-		elif modelpath==None and model=='vgg16':
-			self.model = VGG16(weights='imagenet', include_top=True)
-		elif modelpath != None:
-			print "Loading model from: ", modelpath
-			self.model = load_model(modelpath)
-		else:
-			print "Only two models are available: VGG16 or VGG19"
+	def __init__(self, modelpath=None, labelspath=None):
+		if modelpath==None or labelspath==None:
+			print "Two parameters required:"
+			print "modelpath, labelspath"
 			exit()
+		else:
+			self.model = load_model(modelpath)
+			self.labels = self.get_labels(labelspath)
+		print self.model.summary()
 		print "Class is initialised!!!"
 
 
-	def get_dict(self):
-		path = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/vggfiles/'%os.getlogin()
-		class_dict = {}
-		index_file = open(path+'synset_words.txt')
-		for i,line in enumerate(index_file):
-			record = line.rstrip().split(' ')
-			class_dict[i] = record[1:]
-		return class_dict
+	def get_labels(self, path):
+		labels = []
+		f = open(path, 'r')
+		while True:
+			line = f.readline()
+			if not line:
+				break
+			labels.append(line)
+		f.close()
+		return labels
 
 
-	def get_image_input(self, imagepath, shape=(224, 224)):
+	def get_image_input(self, imagepath, shape=(150, 150)):
 		im = cv2.resize(cv2.imread(imagepath), shape).astype(np.float32)
-		im[:,:,0] -= 103.939
-		im[:,:,1] -= 116.779
-		im[:,:,2] -= 123.68
+		im /= 255.0
 		im = np.expand_dims(im, axis=0)
 		return im
 
@@ -55,26 +50,16 @@ class Imagepredict(object):
 		im = self.get_image_input(imagepath)
 		out = self.model.predict(im)
 		idxs = np.argsort(out[0])[::-1][:k]
-		# results = [['class', 'prob']]
-		results = []
-		for x in idxs:
-			 category = [self.dict[x], float(out[0][x])]
-			 results.append(category)
+		results = np.array(self.labels, dtype='str')[idxs]
 		return results
 
 #==============================================================================	
 
 if __name__ == "__main__":
-
-	if len(argv)==3:
-		modelpath = argv[2]
-	elif len(argv)==2:
-		modelpath=None
-	else:
-		print "Usage: python <script.py> <image_file_path> <model_path>(optional)"
-		exit()
-	input_image = argv[1]
-	ob = Imagepredict(modelpath, model='vgg19')
+	modelpath = argv[1]
+	labelpath = argv[2]
+	input_image = argv[3]
+	ob = Imagepredict(modelpath, labelpath)
 	print ob.predict_image(input_image)
 
 #==============================================================================
