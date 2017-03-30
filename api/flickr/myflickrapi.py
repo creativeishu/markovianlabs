@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import flickr_api
 from flickr_api.api import flickr
+from sys import argv, exit
 
 flickr_api.set_keys(api_key = '7bf041bab823926fe2a02b0d530cc345', \
 	api_secret = '1c62774cf84b482f')
@@ -29,7 +30,14 @@ def query2urls(query, page=1, per_page=500):
 	return getallurl(query_xml)
 
 
-query = 'table chair'
+if len(argv)==1:
+	query = 'tiger'
+elif len(argv)==2:
+	query = argv[1]
+else:
+	print "Usage: python myflickrapi.py <query (Optional)>"
+	exit()
+
 urls = query2urls(query)
 
 for i in range(len(urls)):

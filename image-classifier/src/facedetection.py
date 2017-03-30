@@ -8,6 +8,7 @@ import os
 import copy
 from vggface import VGGFace
 from scipy.spatial.distance import cosine, correlation
+import face_recognition
 
 #==============================================================================
 
@@ -15,36 +16,24 @@ model = VGGFace()
 
 #==============================================================================
 
-
-cascPath = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/vggfiles/haarcascade_frontalface_default.xml'%os.getlogin()
 imagePath1 = argv[1]
-if len(argv)==3:
-	imagePath2 = argv[2]
+imagePath2 = argv[2]
 
 #==============================================================================
 
-def makeimage(imagepath, convertGrey):
-	image = cv2.imread(imagepath)
-	if convertGrey:
-		image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	return image
 
-#------------------------------------------------------------------------------	
-
-def facedetect(imagePath, cascPath, grey=False, scaleFactor=1.1, minNeighbors=5, minSize=(30,30)):
-	image = makeimage(imagePath, grey)
-	faceCascade = cv2.CascadeClassifier(cascPath)
-	faces = faceCascade.detectMultiScale(image, scaleFactor=scaleFactor, \
-		minNeighbors=minNeighbors, minSize=minSize, flags = cv2.CASCADE_SCALE_IMAGE)
+def facedetect(imagePath):
+	image = face_recognition.load_image_file(imagePath)
+	face_locations = face_recognition.face_locations(image)
 
 	allfaces = []
-	for (x, y, w, h) in faces:
-		sub_face = image[y:y+h, x:x+w]
-		sub_face = cv2.resize(sub_face, (224, 224))
-		allfaces.append(sub_face)
-		cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+	for face_location in face_locations:
+		top, right, bottom, left = face_location
+		face_image = image[top:bottom, left:right]
+		face_image = cv2.resize(face_image, (224, 224))
+		allfaces.append(face_image)
 	allfaces = np.array(allfaces)
-	return image, allfaces
+	return allfaces
 
 #------------------------------------------------------------------------------
 
@@ -63,8 +52,8 @@ def faceidentify(image, model):
 
 #------------------------------------------------------------------------------
 
-def facedetectandidentify(imagePath, cascPath, model):
-	image, allfaces = facedetect(imagePath, cascPath)
+def facedetectandidentify(imagePath, model):
+	allfaces = facedetect(imagePath)
 	data = []
 	for i in range(len(allfaces)):
 		res = faceidentify(allfaces[i], model)
@@ -73,8 +62,8 @@ def facedetectandidentify(imagePath, cascPath, model):
 
 #==============================================================================
 
-data1 = facedetectandidentify(imagePath1, cascPath, model)
-data2 = facedetectandidentify(imagePath2, cascPath, model)
+data1 = facedetectandidentify(imagePath1, model)
+data2 = facedetectandidentify(imagePath2, model)
 
 nfaces1 = len(data1)
 nfaces2 = len(data2)

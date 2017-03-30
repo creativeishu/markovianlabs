@@ -30,8 +30,8 @@ else:
 
 
 img_width, img_height = 224, 224
-nb_epoch = 50
-batch_size = 32
+nb_epoch = 30
+batch_size = 64
 nfilters = 64
 nlayers = 3
 nchannels = 3
