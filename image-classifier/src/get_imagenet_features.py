@@ -49,8 +49,9 @@ if __name__ == "__main__":
 		input_image = argv[1]
 		ob = Imagepredict()
 		out = ob.get_features(input_image)
-		plt.plot(out)
-		plt.show()
+		print out.shape
+		# plt.plot(out)
+		# plt.show()
 
 	else:
 		print "Usage: python <script.py> <image_file_path>"
