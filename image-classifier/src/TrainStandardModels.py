@@ -35,7 +35,7 @@ metrics = ['accuracy']
 DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
-savefilename = DIR + 'savedmodels/%s_epoch%i_batch%i.hdf5'\
+savefilename = DIR + '%s_epoch%i_batch%i.hdf5'\
                         %(modelname, nb_epoch, batch_size)
 
 #==============================================================================

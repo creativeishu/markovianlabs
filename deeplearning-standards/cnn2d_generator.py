@@ -29,9 +29,9 @@ else:
 	validation_data_dir = argv[2]
 
 
-img_width, img_height = 224, 224
-nb_epoch = 30
-batch_size = 64
+img_width, img_height = 64, 64
+nb_epoch = 50
+batch_size = 512
 nfilters = 64
 nlayers = 3
 nchannels = 3
@@ -45,7 +45,7 @@ metrics = ['accuracy']
 DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
-savefilename = DIR + 'savedmodels/layers%i_filters%i_epoch%i_batch%i.hdf5'\
+savefilename = DIR + 'layers%i_filters%i_epoch%i_batch%i.hdf5'\
                         %(nlayers, nfilters, nb_epoch, batch_size)
 
 #==============================================================================
