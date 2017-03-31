@@ -4,7 +4,7 @@ from keras.models import Model
 from keras.layers import Flatten, Dense, Dropout
 from keras import backend as K
 from sys import exit, argv
-
+from keras.optimizers import SGD
 
 __author__ = 'irshad mohammed'
 
@@ -21,15 +21,16 @@ else:
 	validation_data_dir = argv[2]
 
 modelname = 'vgg16'
-img_width, img_height = 224, 224
+img_width, img_height = 64, 64
 nb_epoch = 30
-batch_size = 16
+batch_size = 512
 nchannels = 3
 verbose = 1
 savemodel = True
 
-loss = 'binary_crossentropy'
-optimizer = 'adadelta'
+loss = 'categorical_crossentropy'
+#optimizer = 'adadelta'
+optimizer = SGD(lr=0.01, momentum=0.9)
 metrics = ['accuracy']
 
 DIR = train_data_dir.replace('train', 'savedmodels')
