@@ -23,7 +23,7 @@ else:
 modelname = 'vgg16'
 img_width, img_height = 224, 224
 nb_epoch = 30
-batch_size = 32
+batch_size = 16
 nchannels = 3
 verbose = 1
 savemodel = True
