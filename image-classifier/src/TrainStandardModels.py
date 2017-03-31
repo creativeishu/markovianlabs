@@ -1,18 +1,10 @@
-# A sample CNN network
-
 import os
-import h5py
-import numpy as np
-
 from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers.convolutional import ZeroPadding2D
-from keras.layers import Activation, Dropout, Flatten, Dense
-from keras.layers.convolutional import Conv2D
-from keras.layers.pooling import MaxPooling2D
-from keras import optimizers
-from sys import argv, exit
+from keras.models import Model
+from keras.layers import Flatten, Dense, Dropout
 from keras import backend as K
+from sys import exit, argv
+
 
 __author__ = 'irshad mohammed'
 
@@ -28,12 +20,10 @@ else:
 	train_data_dir = argv[1]
 	validation_data_dir = argv[2]
 
-
+modelname = 'vgg16'
 img_width, img_height = 224, 224
 nb_epoch = 30
-batch_size = 64
-nfilters = 64
-nlayers = 3
+batch_size = 32
 nchannels = 3
 verbose = 1
 savemodel = True
@@ -45,8 +35,8 @@ metrics = ['accuracy']
 DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
-savefilename = DIR + 'savedmodels/layers%i_filters%i_epoch%i_batch%i.hdf5'\
-                        %(nlayers, nfilters, nb_epoch, batch_size)
+savefilename = DIR + 'savedmodels/%s_epoch%i_batch%i.hdf5'\
+                        %(modelname, nb_epoch, batch_size)
 
 #==============================================================================
 
@@ -77,33 +67,71 @@ if validation_data_dir != None:
 		class_mode='categorical')
 	valid_samples = validation_generator.samples
 
+
 #==============================================================================
 
-model = Sequential()
-model.add(ZeroPadding2D((1,1),input_shape=inputshape))
-for i in range(nlayers):
-	model.add(Conv2D(nfilters, (3, 3), activation='relu', name='conv2d_%i'%(i+1)))
-	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+def load_standard_models_for_training(model='vgg19', num_classes=2, \
+                         inputshape=(224,224,3), weights=None):
+    """
+    Arguements:
+        model: vgg19, vgg16, inceptionv3, resnet50, xception
+        num_classes: Number of classes 
+        inputshape: (img_width, img_height, n_channels)
+        weights: imagenet or None
+        
+    Returns: 
+        A model, neural network architecture. 
+    """
+    
+    if model=='vgg19':
+        from keras.applications.vgg19 import VGG19
+        base_model = VGG19(weights=weights, include_top = False, \
+                           input_shape=inputshape)
+    elif model=='vgg16':
+        from keras.applications.vgg16 import VGG16
+        base_model = VGG16(weights=weights, include_top = False, \
+                           input_shape=inputshape)
+    elif model=='inceptionv3':
+        from keras.applications.inception_v3 import InceptionV3
+        base_model = InceptionV3(weights=weights, include_top = False, \
+                           input_shape=inputshape)
+    elif model=='resnet50':
+        from keras.applications.resnet50 import ResNet50
+        base_model = ResNet50(weights=weights, include_top = False, \
+                           input_shape=inputshape)
+    elif model=='xception':
+        from keras.applications.xception import Xception
+        base_model = Xception(weights=weights, include_top = False, \
+                           input_shape=inputshape)        
+    else:
+        print "Valid models are:"
+        print "vgg19, vgg16, inceptionv3, resnet50, xception"
+        exit()
 
-model.add(Flatten())
-model.add(Dense(nfilters, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(nb_class, activation='sigmoid'))
+    x = Flatten()(base_model.output)
+    x = Dense(4096, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    x = Dense(4096, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    predictions = Dense(num_classes, activation = 'softmax')(x)
+    model = Model(inputs = base_model.input, outputs = predictions)
+    return model
 
+model = load_standard_models_for_training(modelname, num_classes=nb_class, \
+                                          inputshape=inputshape)
 model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
 
 #==============================================================================
 
 print "============================================"
+print "Using model: ", modelname
 print "Data Format: ", K.image_data_format()
 print "Input shape: ", inputshape
 print "Number of training samples: ", train_samples
 if validation_data_dir != None:
 	print "Number of validation samples: ", valid_samples
 print "Number of classes: ", nb_class
-print "Number of convolutional layers: ", nlayers
 print "Batch size: ", batch_size
-print "Number of fileters in convolutional layers: ", nfilters
 print "Loss: ", loss
 print "Optimizer: ", optimizer
 print "Metrics: ", metrics
@@ -120,7 +148,7 @@ if validation_data_dir != None:
 		validation_steps=valid_samples/batch_size, verbose=verbose)
 else:
 	model.fit_generator(train_generator, \
-		steps_per_epoch=train_samples//batch_size, epochs=nb_epoch, verbose=verbose)	
+		steps_per_epoch=train_samples//batch_size, epochs=nb_epoch, verbose=verbose)
 if savemodel:
 	model.save(savefilename, overwrite=True)
 
