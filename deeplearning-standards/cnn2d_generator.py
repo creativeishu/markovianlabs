@@ -13,6 +13,7 @@ from keras.layers.pooling import MaxPooling2D
 from keras import optimizers
 from sys import argv, exit
 from keras import backend as K
+from keras.optimizers import SGD
 
 __author__ = 'irshad mohammed'
 
@@ -32,14 +33,15 @@ else:
 img_width, img_height = 64, 64
 nb_epoch = 50
 batch_size = 512
-nfilters = 64
-nlayers = 3
+nfilters = 128
+nlayers = 2
 nchannels = 3
 verbose = 1
 savemodel = True
 
-loss = 'binary_crossentropy'
+loss = 'categorical_crossentropy'
 optimizer = 'adadelta'
+#optimizer = SGD(lr=0.05, momentum=0.9)
 metrics = ['accuracy']
 
 DIR = train_data_dir.replace('train', 'savedmodels')

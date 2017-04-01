@@ -30,7 +30,7 @@ savemodel = True
 
 loss = 'categorical_crossentropy'
 #optimizer = 'adadelta'
-optimizer = SGD(lr=0.01, momentum=0.9)
+optimizer = SGD(lr=0.1, momentum=0.9)
 metrics = ['accuracy']
 
 DIR = train_data_dir.replace('train', 'savedmodels')
