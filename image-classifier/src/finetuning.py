@@ -22,7 +22,7 @@ __author__ = 'irshad mohammed'
 
 #==============================================================================
 
-Train_bottleneck = True
+Train_bottleneck = False
 Train_topmodel = True
 
 if len(argv)<2 or len(argv)>3:
