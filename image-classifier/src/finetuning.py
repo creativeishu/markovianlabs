@@ -14,6 +14,7 @@ from keras import backend as K
 from keras.applications.vgg16 import VGG16
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from glob import glob
 
 np.random.seed(1234)
 from sys import argv, exit
@@ -49,6 +50,25 @@ metrics = ['accuracy']
 
 #==============================================================================
 
+nTrain = []
+class_folders = glob(train_data_dir+'*')
+for i in range(len(class_folders)):
+    files = glob(class_folders[i]+'/*')
+    nTrain.append(len(files))
+    print nTrain[i]
+
+if validation_data_dir != None:
+    nValidation = []
+    class_folders = glob(validation_data_dir+'*')
+    for i in range(len(class_folders)):
+        files = glob(class_folders[i]+'/*')
+        nValidation.append(len(files))
+        print nValidation[i]
+
+print sum(nTrain), sum(nValidation)
+
+#==============================================================================
+
 DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
@@ -68,6 +88,9 @@ train_generator = train_datagen.flow_from_directory(train_data_dir, \
     class_mode='categorical')
 train_samples = train_generator.samples 
 nb_class = max(train_generator.classes)+1
+if train_samples != sum(nTrain):
+    print "Something wrong with number of training samples"
+    exit()
 
 if validation_data_dir != None:
     test_datagen = ImageDataGenerator(rescale=1./255)
@@ -75,6 +98,9 @@ if validation_data_dir != None:
         target_size=(img_width, img_height), batch_size=batch_size, \
         class_mode='categorical')
     valid_samples = validation_generator.samples
+    if valid_samples != sum(nValidation):
+        print "Something wrong with number of training samples"
+        exit()
 
 #==============================================================================
 
@@ -188,7 +214,7 @@ def train_top_model():
     nb_train_samples = len(train_data)
     train_labels = []
     for i in range(nb_class):
-        train_labels +=  list([i] * (nb_train_samples/nb_class))
+        train_labels +=  list([i] * nTrain[i])
     train_labels = np.array(train_labels)
     train_labels = one_hot_encode_object_array(train_labels)
 
@@ -197,7 +223,7 @@ def train_top_model():
         nb_validation_samples = len(validation_data)
         validation_labels = []
         for i in range(nb_class):
-            validation_labels +=  list([i] * (nb_validation_samples/nb_class))
+            validation_labels +=  list([i] * nValidation[i])
         validation_labels = np.array(validation_labels)
         validation_labels = one_hot_encode_object_array(validation_labels)
 
