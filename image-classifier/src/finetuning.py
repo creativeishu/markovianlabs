@@ -123,7 +123,7 @@ print
 print "Train data directory: ", train_data_dir
 if validation_data_dir != None:
     print "Vaoidation data directory: : ", validation_data_dir
-print "bottleneck_features will be saved/loaded from directory: ", folder
+print "bottleneck_features will be saved/loaded from directory: ", DIR
 print "Top_model will be saved/loaded from directory: ", top_model_file
 print "Model will be saved at: ", savefilename
 print "Using model: ", modelname
