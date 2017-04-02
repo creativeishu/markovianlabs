@@ -36,11 +36,6 @@ else:
     validation_data_dir = argv[2]
 
 modelname = 'vgg16'
-folder = train_data_dir.replace('train', 'savedmodels')
-bottleneck_train_file = folder+'%s_bottleneck_features_train.npy'%modelname
-bottleneck_validation_file = folder+'%s_bottleneck_features_validation.npy'%modelname
-top_model_file = folder+'%s_top_model.hdf5'%modelname
-
 img_width, img_height = 224, 224
 nb_epoch = 50
 batch_size = 32
@@ -57,8 +52,11 @@ metrics = ['accuracy']
 DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
-savefilename = DIR + '%s_epoch%i_batch%i.hdf5'\
+savefilename = DIR + 'finetuned_%s_epoch%i_batch%i.hdf5'\
                         %(modelname, nb_epoch, batch_size)
+bottleneck_train_file = DIR+'%s_bottleneck_features_train.npy'%modelname
+bottleneck_validation_file = DIR+'%s_bottleneck_features_validation.npy'%modelname
+top_model_file = DIR+'%s_top_model.hdf5'%modelname
 
 #==============================================================================
 
