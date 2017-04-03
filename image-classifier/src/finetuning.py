@@ -24,7 +24,7 @@ __author__ = 'irshad mohammed'
 #==============================================================================
 
 Train_bottleneck = False
-Train_topmodel = True
+Train_topmodel = False
 
 if len(argv)<2 or len(argv)>3:
     print "Usage: python cnn2d_generator.py <train_path> <validation_path (OPTIONAL)>"
@@ -37,15 +37,15 @@ else:
     validation_data_dir = argv[2]
 
 modelname = 'vgg16'
-img_width, img_height = 224, 224
-nb_epoch = 50
-batch_size = 32
+img_width, img_height = 64, 64
+nb_epoch = 30
+batch_size = 512
 nchannels = 3
 verbose = 1
 savemodel = True
 
 loss = 'categorical_crossentropy'
-optimizer = SGD(lr=0.0001, momentum=0.9)
+optimizer = SGD(lr=0.0005, momentum=0.9)
 metrics = ['accuracy']
 
 #==============================================================================
@@ -55,7 +55,6 @@ class_folders = glob(train_data_dir+'*')
 for i in range(len(class_folders)):
     files = glob(class_folders[i]+'/*')
     nTrain.append(len(files))
-    print nTrain[i]
 
 if validation_data_dir != None:
     nValidation = []
@@ -63,9 +62,8 @@ if validation_data_dir != None:
     for i in range(len(class_folders)):
         files = glob(class_folders[i]+'/*')
         nValidation.append(len(files))
-        print nValidation[i]
 
-print sum(nTrain), sum(nValidation)
+# print sum(nTrain), sum(nValidation)
 
 #==============================================================================
 
