@@ -15,7 +15,7 @@ __author__ = 'irshad mohammed'
 
 #==============================================================================
 
-Train_bottleneck = True
+Train_bottleneck = False
 Train_topmodel = True
 
 if len(argv)<2 or len(argv)>3:
@@ -32,7 +32,7 @@ else:
 # vgg19, vgg16, inceptionv3, resnet50, xception
 modelname = 'resnet50'
 img_width, img_height = 224, 224
-nb_epoch = 30
+nb_epoch = 300
 batch_size = 32
 nchannels = 3
 verbose = 1
