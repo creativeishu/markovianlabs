@@ -33,7 +33,7 @@ else:
 img_width, img_height = 224, 224
 nb_epoch = 50
 batch_size = 32
-nfilters = [64, 128, 256, 512, 512]
+nfilters = [64, 64, 64, 64, 64]
 nlayers = 5
 if nlayers>5:
 	print "Number of layers cannot be greater than 5"
@@ -88,15 +88,15 @@ model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=inputshape))
 for i in range(nlayers):
 	model.add(Conv2D(nfilters[i], (3, 3), activation='relu', name='conv2d_%i'%(i+1)))
-	if (i%2==1):
-		model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 model.add(Flatten())
-model.add(Dense(4096, activation='relu'))
+print "HAHAHAHAHAAH: ", model.output_shape
+model.add(Dense(model.output_shape[1]/4, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(model.output_shape[1]/4, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(256, activation='relu'))
+model.add(Dense(model.output_shape[1]/4, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(nb_class, activation='sigmoid'))
 
