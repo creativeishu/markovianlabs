@@ -6,6 +6,7 @@ To read the doc string of a function, do: print my_function.__doc__
 
 export PYTHONPATH=<PATH_TO_THIS_FOLDER>:$PYTHONPATH
 """
+import os 
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
@@ -25,13 +26,22 @@ class train_models_generator(object):
     """
     My main docstring
     """
-    def __init__(self, train_dir, valid_dir=None, \
+    def __init__(self, train_dir, valid_dir=None, save_dir=None,\
                     img_width=224, img_height=224, batch_size=32, \
                     nchannels=3, rescale=1./255, shear_range=0.2, \
                     zoom_range=0.2, horizontal_flip=True):
         """
         Doc string for the constructor
         """
+        self.train_dir = train_dir
+        self.valid_dir = valid_dir
+        if save_dir==None:
+            self.save_dir = train_dir.replace('train', 'savedmodels')
+        else:
+            self.save_dir = save_dir
+
+        if not os.path.exists(self.save_dir):
+            os.mkdir(self.save_dir)
 
         self.batch_size = batch_size
         self.train_generator = self.initialize_generator(train_dir, \
@@ -58,6 +68,20 @@ class train_models_generator(object):
         else:
             print "Invalid  data format: ", K.image_data_format()
             exit()
+
+#------------------------------------------------------------------------------
+
+    def print_summary(self):
+        print
+        print "================================================================"
+        print 
+        print "Training data: ", self.train_dir
+        print "Validation data: ", self.valid_dir
+        print "Output will be saved at: ", self.save_dir
+        print "Input shape: ", self.inputshape
+        print "Number of training samples: ", self.nb_train_samples
+        print "Number of validation samples: ", self.nb_valid_samples
+        print "Batch size: ", self.batch_size
 
 #------------------------------------------------------------------------------        
         
@@ -179,39 +203,70 @@ class train_models_generator(object):
                     metrics=['accuracy'], \
                     optimizer='adadelta', \
                     nb_epoch=50, verbose=1, \
-                    save=False, savefilename='mymodel.hdf5'):
+                    save=False, savefilename='mymodel.hdf5', \
+                    print_metadata=True):
         """
-        My doc string 
+        Arguements:
+        -----------
+        model='vgg19', weights=None, \
+        loss='categorical_crossentropy', \
+        metrics=['accuracy'], \
+        optimizer='adadelta', \
+        nb_epoch=50, verbose=1, \
+        save=False, savefilename='mymodel.hdf5', \
+        print_metadata=True
         """
 
         mymodel = self.load_standard_models_for_training(model, \
                             weights=weights, \
                             inputshape=self.inputshape)
         mymodel.compile(loss=loss, metrics=metrics, optimizer=optimizer)
-        print mymodel.summary()
-        hist = mymodel.fit_generator(self.train_generator, \
+
+        if print_metadata:
+            self.print_summary()
+            print "Model name: ", model
+            print "Loss: ", loss
+            print "Metrics: ", metrics
+            print "Optimizer: ", optimizer
+            print "Number of epochs: ", nb_epoch
+            print "Model file: ", self.save_dir+savefilename
+            print mymodel.summary()
+
+            hist = mymodel.fit_generator(self.train_generator, \
                     validation_data=self.valid_generator, \
                     steps_per_epoch=self.nb_train_samples/self.batch_size+1, \
                     validation_steps=self.nb_valid_samples/self.batch_size+1,\
                     epochs=nb_epoch, verbose=verbose)
         if save:
-            mymodel.save(savefilename)        
+            mymodel.save(self.save_dir+savefilename)        
         return hist
 
 #------------------------------------------------------------------------------        
 
     def train_custom_model(self, \
-                    nlayers_conv=3, filters_conv=64, \
-                    nlayers_dense=2, filters_dense=256, \
+                    nlayers_conv=5, filters_conv=32, \
+                    nlayers_dense=2, filters_dense=32, \
                     conv_kernel=(3,3), pooling_kernel=(2,2), \
                     activation='relu', \
                     loss='categorical_crossentropy', \
                     metrics=['accuracy'], \
                     optimizer='adadelta', \
                     nb_epoch=50, verbose=1, \
-                    save=False, savefilename='mymodel.hdf5'):
+                    save=False, savefilename='mymodel.hdf5', \
+                    print_metadata=True):
         """
-        My doc string
+        Arguements:
+        -----------
+        nlayers_conv=3, filters_conv=64, \
+        nlayers_dense=2, filters_dense=256, \
+        conv_kernel=(3,3), pooling_kernel=(2,2), \
+        activation='relu', \
+        loss='categorical_crossentropy', \
+        metrics=['accuracy'], \
+        optimizer='adadelta', \
+        nb_epoch=50, verbose=1, \
+        save=False, savefilename='mymodel.hdf5', \
+        print_metadata=True
         """
 
         mymodel = self.load_custom_models_for_training(\
@@ -220,23 +275,33 @@ class train_models_generator(object):
                     nlayers_dense=nlayers_dense, filters_dense=filters_dense, \
                     activation=activation)
         mymodel.compile(loss=loss, metrics=metrics, optimizer=optimizer)
-        print mymodel.summary()
+
+        if print_metadata:
+            self.print_summary()            
+            print "Number of convolutional layers: ", nlayers_conv
+            print "Number of convolutional filters: ", filters_conv
+            print "Number of dense layers: ", nlayers_dense
+            print "Number of dense filters: ", filters_dense
+            print "Activation functions: ", activation
+            print "Loss: ", loss
+            print "Metrics: ", metrics
+            print "Optimizer: ", optimizer
+            print "Number of epochs: ", nb_epoch
+            print "Model file: ", self.save_dir+savefilename
+            print mymodel.summary()
+
         hist = mymodel.fit_generator(self.train_generator, \
                     validation_data=self.valid_generator, \
                     steps_per_epoch=self.nb_train_samples/self.batch_size+1, \
                     validation_steps=self.nb_valid_samples/self.batch_size+1,\
                     epochs=nb_epoch, verbose=verbose)
         if save:
-            mymodel.save(savefilename)
+            mymodel.save(self.save_dir+savefilename)
         return hist
 
 #==============================================================================
 
 if __name__=="__main__":
-    train_dir = '/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/train/'
-    valid_dir = '/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/validation/'
-    
-    ob = train_models_generator(train_dir, valid_dir, batch_size=8)
-    ob.train_custom_model()
+    print train_models_generator.__doc__
+    print train_models_generator.train_custom_model.__doc__
+    print train_models_generator.train_standard_model.__doc__
