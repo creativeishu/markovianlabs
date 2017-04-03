@@ -1,17 +1,9 @@
-
 import numpy as np
-import matplotlib.pyplot as plt
 import os
-import h5py
 from keras.preprocessing.image import ImageDataGenerator
-from keras import optimizers
 from keras.models import Sequential, Model, load_model
-from keras.layers import ZeroPadding2D
-from keras.layers.convolutional import Conv2D
-from keras.layers.pooling import MaxPooling2D
-from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.layers import Flatten, Dense, Dropout
 from keras import backend as K
-from keras.applications.vgg16 import VGG16
 from keras.optimizers import SGD
 from keras.utils import np_utils
 from glob import glob
@@ -23,11 +15,12 @@ __author__ = 'irshad mohammed'
 
 #==============================================================================
 
-Train_bottleneck = False
-Train_topmodel = False
+Train_bottleneck = True
+Train_topmodel = True
 
 if len(argv)<2 or len(argv)>3:
-    print "Usage: python cnn2d_generator.py <train_path> <validation_path (OPTIONAL)>"
+    print "Usage: python cnn2d_generator.py <train_path> \
+    <validation_path (OPTIONAL)>"
     exit()
 elif len(argv)==2:
     train_data_dir = argv[1]
@@ -36,10 +29,11 @@ else:
     train_data_dir = argv[1]
     validation_data_dir = argv[2]
 
-modelname = 'vgg16'
-img_width, img_height = 64, 64
+# vgg19, vgg16, inceptionv3, resnet50, xception
+modelname = 'inceptionv3'
+img_width, img_height = 224, 224
 nb_epoch = 30
-batch_size = 512
+batch_size = 32
 nchannels = 3
 verbose = 1
 savemodel = True
@@ -73,7 +67,8 @@ if not os.path.exists(DIR):
 savefilename = DIR + 'finetuned_%s_epoch%i_batch%i.hdf5'\
                         %(modelname, nb_epoch, batch_size)
 bottleneck_train_file = DIR+'%s_bottleneck_features_train.npy'%modelname
-bottleneck_validation_file = DIR+'%s_bottleneck_features_validation.npy'%modelname
+bottleneck_validation_file = DIR+'%s_bottleneck_features_validation.npy'\
+                            %modelname
 top_model_file = DIR+'%s_top_model.hdf5'%modelname
 
 #==============================================================================
@@ -92,7 +87,8 @@ if train_samples != sum(nTrain):
 
 if validation_data_dir != None:
     test_datagen = ImageDataGenerator(rescale=1./255)
-    validation_generator = test_datagen.flow_from_directory(validation_data_dir, \
+    validation_generator = test_datagen.flow_from_directory(\
+        validation_data_dir, \
         target_size=(img_width, img_height), batch_size=batch_size, \
         class_mode='categorical')
     valid_samples = validation_generator.samples
@@ -135,7 +131,7 @@ elif modelname=='xception':
 else:
     print "Valid models are:"
     print "vgg19, vgg16, inceptionv3, resnet50, xception"
-    exit() 
+    exit()
 
 #==============================================================================
 
@@ -209,7 +205,6 @@ def train_top_model():
     print "Training top_model..."
     print 
     train_data = np.load(open(bottleneck_train_file))
-    nb_train_samples = len(train_data)
     train_labels = []
     for i in range(nb_class):
         train_labels +=  list([i] * nTrain[i])
@@ -218,7 +213,6 @@ def train_top_model():
 
     if validation_data_dir != None:
         validation_data = np.load(open(bottleneck_validation_file))
-        nb_validation_samples = len(validation_data)
         validation_labels = []
         for i in range(nb_class):
             validation_labels +=  list([i] * nValidation[i])
@@ -279,11 +273,12 @@ print "============================================"
 #==============================================================================
 print "============================================" 
 print
-print "Finally fine tuning the last block of VGG and the fully connected layer..."
+print "Finally fine tuning the last block of VGG and \
+the fully connected layer..."
 print
 
 if validation_data_dir != None:
-    model.fit_generator(train_generator, validation_data=validation_generator, \
+    model.fit_generator(train_generator, validation_data=validation_generator,\
         steps_per_epoch=train_samples/batch_size+1, epochs=nb_epoch, \
         validation_steps=valid_samples/batch_size+1, verbose=verbose)
 else:
