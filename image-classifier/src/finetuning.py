@@ -30,7 +30,7 @@ else:
     validation_data_dir = argv[2]
 
 # vgg19, vgg16, inceptionv3, resnet50, xception
-modelname = 'inceptionv3'
+modelname = 'resnet50'
 img_width, img_height = 224, 224
 nb_epoch = 30
 batch_size = 32
