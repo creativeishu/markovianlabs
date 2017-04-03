@@ -30,11 +30,14 @@ else:
 	validation_data_dir = argv[2]
 
 
-img_width, img_height = 64, 64
+img_width, img_height = 224, 224
 nb_epoch = 50
-batch_size = 512
-nfilters = 128
-nlayers = 2
+batch_size = 32
+nfilters = [64, 128, 256, 512, 512]
+nlayers = 4
+if nlayers>5:
+	print "Number of layers cannot be greater than 5"
+	exit()
 nchannels = 3
 verbose = 1
 savemodel = True
@@ -48,7 +51,7 @@ DIR = train_data_dir.replace('train', 'savedmodels')
 if not os.path.exists(DIR):
     os.mkdir(DIR)
 savefilename = DIR + 'layers%i_filters%i_epoch%i_batch%i.hdf5'\
-                        %(nlayers, nfilters, nb_epoch, batch_size)
+                        %(nlayers, nfilters[0], nb_epoch, batch_size)
 
 #==============================================================================
 
@@ -84,11 +87,13 @@ if validation_data_dir != None:
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=inputshape))
 for i in range(nlayers):
-	model.add(Conv2D(nfilters, (3, 3), activation='relu', name='conv2d_%i'%(i+1)))
+	model.add(Conv2D(nfilters[i], (3, 3), activation='relu', name='conv2d_%i'%(i+1)))
 	model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
 model.add(Flatten())
-model.add(Dense(nfilters, activation='relu'))
+model.add(Dense(4096, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(4096, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(nb_class, activation='sigmoid'))
 
@@ -105,7 +110,7 @@ if validation_data_dir != None:
 print "Number of classes: ", nb_class
 print "Number of convolutional layers: ", nlayers
 print "Batch size: ", batch_size
-print "Number of fileters in convolutional layers: ", nfilters
+print "Number of fileters in convolutional layers: ", nfilters[:nlayers]
 print "Loss: ", loss
 print "Optimizer: ", optimizer
 print "Metrics: ", metrics
