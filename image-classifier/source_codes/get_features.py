@@ -16,8 +16,13 @@ def get_features(img_path, layername='fc1'):
 	x = np.expand_dims(x, axis=0)
 	x = preprocess_input(x)
 	features = model.predict(x)
-	features = np.ndarray.flatten(features)
 	return features
+
+#------------------------------------------------------------------------------
+
+def get_features_vector(img_path, layername='fc1'):
+	features = get_features(img_path, layername)
+	return np.ndarray.flatten(features)
 
 #==============================================================================
 
