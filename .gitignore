@@ -7,3 +7,6 @@ irshad/
 website/Uploads/
 *.log
 *batch*
+*.h5
+*.hdf5
+*.weights
