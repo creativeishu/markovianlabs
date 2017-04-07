@@ -1,8 +1,14 @@
+"""
+Description
+"""
+
+import numpy as np
 from keras.applications.vgg19 import VGG19
 from keras.preprocessing import image
 from keras.applications.vgg19 import preprocess_input
 from keras.models import Model
-import numpy as np
+
+__author__ = "Irsahd Mohammed"
 
 #==============================================================================
 
@@ -36,3 +42,5 @@ if __name__ == "__main__":
 	else:
 		print "Usage: python get_features.py <ImagePath> <LayerName (OPTIONAL)>"
 		exit()
+
+#==============================================================================		
