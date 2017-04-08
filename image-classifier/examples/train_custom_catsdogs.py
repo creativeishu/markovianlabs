@@ -9,12 +9,9 @@ from train_models import train_models_generator as T
 # Parameters:
 #------------
 
-train_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/train/'
-valid_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/validation/'
-save_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/savedmodels/'
+train_dir='/data/mohammed/data/deeplensing/data160/train/'
+valid_dir=None
+save_dir='/data/mohammed/data/deeplensing/data160/savedmodels/'
 img_width=224
 img_height=224
 batch_size=32
@@ -37,7 +34,7 @@ optimizer='adadelta'
 nb_epoch=50
 verbose=1
 save=False
-savefilename='mymodel.hdf5'
+savefilename='data160_conv%i_dense%i.hdf5'%(nlayers_conv, nlayers_dense)
 print_metadata=True
 
 #==============================================================================
