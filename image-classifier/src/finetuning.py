@@ -16,7 +16,7 @@ __author__ = 'irshad mohammed'
 #==============================================================================
 
 Train_bottleneck = False
-Train_topmodel = True
+Train_topmodel = False
 
 if len(argv)<2 or len(argv)>3:
     print "Usage: python cnn2d_generator.py <train_path> \
@@ -30,9 +30,9 @@ else:
     validation_data_dir = argv[2]
 
 # vgg19, vgg16, inceptionv3, resnet50, xception
-modelname = 'resnet50'
+modelname = 'vgg16'
 img_width, img_height = 224, 224
-nb_epoch = 300
+nb_epoch = 2
 batch_size = 32
 nchannels = 3
 verbose = 1
