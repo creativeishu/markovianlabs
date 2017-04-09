@@ -31,8 +31,8 @@ metrics=['accuracy']
 optimizer='adadelta'
 nb_epoch=50
 verbose=1
-save=False
-savefilename='mymodel.hdf5'
+save=True
+savefilename='model_%s_nepoch%i.hdf5'%(model, nb_epoch)
 print_metadata=True
 
 #==============================================================================
