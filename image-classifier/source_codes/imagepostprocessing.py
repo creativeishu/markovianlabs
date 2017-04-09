@@ -21,7 +21,7 @@ from keras.utils import np_utils
 from sklearn.metrics import roc_curve
 from sklearn.metrics import confusion_matrix
 import cv2
-
+from glob import glob
 
 __author__ = "Irshad Mohammed"
 
@@ -227,6 +227,7 @@ class TestSetAnalysis(object):
 		    print "xception/inceptionv3 model is only available in tf backend"
 		    print "Or provide path to a saved model in .hdf5 format"
 		    exit()
+		print self.model.summary()
 		self.inputshape = self.model.layers[firstlayer_index].output_shape[1:]
 
 #------------------------------------------------------------------------------
@@ -248,7 +249,8 @@ class TestSetAnalysis(object):
 		samples = generator.samples
 		nb_class = generator.num_class
 		predictions = self.model.predict_generator(generator, \
-												samples/batchsize)
+												samples/batchsize+1)
+		predictions = predictions[:samples, :]
 		predict_labels = np.argmax(predictions, axis=1)
 		true_labels = []
 		for i in range(nb_class):
@@ -261,7 +263,7 @@ class TestSetAnalysis(object):
 		return confusion_matrix(true_labels, predict_labels)
 
 	def plot_confusion_matrix(self, true_labels, predict_labels, cmap='Blues'):
-		matrix = get_confusion_matrix(true_labels, predict_labels)
+		matrix = self.get_confusion_matrix(true_labels, predict_labels)
 		plt.figure(figsize=(8,8))
 		plt.imshow(matrix, cmap=cmap)
 		plt.show()
@@ -270,11 +272,14 @@ class TestSetAnalysis(object):
 
 	def get_roc_curve(self, true_labels, predictions):
 		FPR, TPR, thresholds = roc_curve(true_labels, predictions[:,1])
+		return FPR, TPR, thresholds
 
 	def plot_roc_curve(self, true_labels, predictions):
-		FPR, TPR, thresholds = get_roc_curve(self, true_labels, predictions)
+		FPR, TPR, thresholds = self.get_roc_curve(true_labels, predictions)
 		plt.figure(figsize=(8,8))
 		plt.plot(FPR, TPR, 'k', lw=2)
+		plt.xlim(0,1)
+		plt.ylim(0,1)
 		plt.xlabel('$\mathtt{FalsePositiveRate}$', fontsize=22)
 		plt.ylabel('$\mathtt{TruePositiveRate}$', fontsize=22)
 		plt.show()
@@ -283,7 +288,10 @@ class TestSetAnalysis(object):
 
 if __name__ == "__main__":
 	from sys import argv
-	model = 'vgg19'
-	ob = image_analysis(model)
-	print ob.get_image_category(argv[1], argv[2])
+	model = argv[1]
+	data_dir = argv[2]
+	ob = TestSetAnalysis(model)
+	true_labels, predict_labels, predictions = ob.predict_generator(data_dir)
+	ob.plot_confusion_matrix(true_labels, predict_labels)
+	ob.plot_roc_curve(true_labels, predictions)
 
