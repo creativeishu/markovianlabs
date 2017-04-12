@@ -198,7 +198,7 @@ class TestSetAnalysis(object):
 	class string
 	"""
 
-	def __init__(self, model='vgg19'):
+	def __init__(self, model='vgg19', show=True):
 		"""
 		doc string constructor
 		"""
@@ -227,62 +227,110 @@ class TestSetAnalysis(object):
 		    print "xception/inceptionv3 model is only available in tf backend"
 		    print "Or provide path to a saved model in .hdf5 format"
 		    exit()
-		print self.model.summary()
+		if show:
+			print self.model.summary()
 		self.inputshape = self.model.layers[firstlayer_index].output_shape[1:]
 
 #------------------------------------------------------------------------------
 
 	def predict_generator(self, data_dir, batchsize=32):
+		self.data_dir = data_dir
 		datagen = ImageDataGenerator(rescale=1./255)
-		generator = datagen.flow_from_directory(data_dir, \
+		self.generator = datagen.flow_from_directory(self.data_dir, \
 								target_size=self.inputshape[:2], \
 		                        batch_size=batchsize, \
 		                        class_mode='categorical', \
 		                        shuffle=False)
 
 		nfiles = []
-		class_folders = glob(data_dir+'*')
+		class_folders = glob(self.data_dir+'*')
 		for i in range(len(class_folders)):
 		    files = glob(class_folders[i]+'/*')
 		    nfiles.append(len(files))
 
-		samples = generator.samples
-		nb_class = generator.num_class
-		predictions = self.model.predict_generator(generator, \
+		samples = self.generator.samples
+		nb_class = self.generator.num_class
+		self.predictions = self.model.predict_generator(self.generator, \
 												samples/batchsize+1)
-		predictions = predictions[:samples, :]
-		predict_labels = np.argmax(predictions, axis=1)
-		true_labels = []
+		self.predictions = self.predictions[:samples, :]
+		self.predict_labels = np.argmax(self.predictions, axis=1)
+		self.true_labels = []
 		for i in range(nb_class):
-			true_labels +=  list([i] * nfiles[i])
-		return true_labels, predict_labels, predictions
+			self.true_labels +=  list([i] * nfiles[i])
+
+		self.confusion_matrix = confusion_matrix(\
+										self.true_labels, \
+										self.predict_labels)
+		if nb_class==2:
+			self.FPR, self.TPR, thresholds = roc_curve(\
+										self.true_labels, \
+										self.predictions[:,1])
+			
+		return self.true_labels, self.predict_labels, self.predictions, \
+				self.confusion_matrix, self.FPR, self.TPR
 
 #------------------------------------------------------------------------------
 
-	def get_confusion_matrix(self, true_labels, predict_labels):
-		return confusion_matrix(true_labels, predict_labels)
-
-	def plot_confusion_matrix(self, true_labels, predict_labels, cmap='Blues'):
-		matrix = self.get_confusion_matrix(true_labels, predict_labels)
+	def plot_confusion_matrix(self, cmap='Blues'):
 		plt.figure(figsize=(8,8))
+		matrix = self.confusion_matrix/float(np.sum(self.confusion_matrix))
 		plt.imshow(matrix, cmap=cmap)
+		plt.xticks([], [])
+		plt.yticks([], [])
+		plt.clim(0,0.5)
+		plt.savefig('apparelvalidation15.eps')
 		plt.show()
 
 #------------------------------------------------------------------------------
 
-	def get_roc_curve(self, true_labels, predictions):
-		FPR, TPR, thresholds = roc_curve(true_labels, predictions[:,1])
-		return FPR, TPR, thresholds
-
-	def plot_roc_curve(self, true_labels, predictions):
-		FPR, TPR, thresholds = self.get_roc_curve(true_labels, predictions)
+	def plot_roc_curve(self):
 		plt.figure(figsize=(8,8))
-		plt.plot(FPR, TPR, 'k', lw=2)
-		plt.xlim(0,1)
-		plt.ylim(0,1)
+		plt.plot(self.FPR, self.TPR, 'k', lw=2)
+		plt.xlim(-0.01,1)
+		plt.ylim(0,1.01)
 		plt.xlabel('$\mathtt{FalsePositiveRate}$', fontsize=22)
 		plt.ylabel('$\mathtt{TruePositiveRate}$', fontsize=22)
 		plt.show()
+
+#------------------------------------------------------------------------------
+
+	def plot_samples(self, ind_arr, N=100, ncol=15, \
+						save=False, savefigname='samples.eps'):
+
+	    ind_arr = np.random.choice(ind_arr, size=N, replace=False)
+	    names = np.array(self.generator.filenames)[ind_arr]
+	    N = N - N%ncol
+	    print N
+	    nrow = N/ncol
+	    f, axarr = plt.subplots(nrow, ncol, sharex=True, sharey=True, \
+	    						figsize=(ncol, nrow))
+	    f.subplots_adjust(wspace=0.0, hspace=0)
+
+	    for i in range(nrow):
+	        for j in range(ncol):
+	            axarr[i,j].imshow(cv2.imread(self.data_dir+names[i*ncol+j]))
+	            axarr[i,j].set_xticks([], [])
+	            axarr[i,j].set_yticks([], [])
+	    if save:
+	    	f.savefig(savefigname)
+
+#------------------------------------------------------------------------------
+
+	def get_cm_index(self):
+	    self.tp = []
+	    self.tn = []
+	    self.fp = []
+	    self.fn = []
+	    for i in range(len(self.true_labels)):
+	        if self.true_labels[i]==1 and self.predict_labels[i]==1:
+	            self.tp.append(i)
+	        elif self.true_labels[i]==0 and self.predict_labels[i]==0:
+	            self.tn.append(i)
+	        elif self.true_labels[i]==0 and self.predict_labels[i]==1:
+	            self.fp.append(i)
+	        elif self.true_labels[i]==1 and self.predict_labels[i]==0:
+	            self.fn.append(i)
+	    return self.tp, self.tn, self.fp, self.fn
 
 #==============================================================================
 
@@ -293,5 +341,5 @@ if __name__ == "__main__":
 	ob = TestSetAnalysis(model)
 	true_labels, predict_labels, predictions = ob.predict_generator(data_dir)
 	ob.plot_confusion_matrix(true_labels, predict_labels)
-	ob.plot_roc_curve(true_labels, predictions)
+	# ob.plot_roc_curve(true_labels, predictions)
 

@@ -199,7 +199,7 @@ class train_models_generator(object):
 #------------------------------------------------------------------------------
 
     def train_standard_model(self, model='vgg19', weights=None, \
-                    loss='categorical_crossentropy', \
+                    loss='binary_crossentropy', \
                     metrics=['accuracy'], \
                     optimizer='adadelta', \
                     nb_epoch=50, verbose=1, \
@@ -248,7 +248,7 @@ class train_models_generator(object):
                     nlayers_dense=2, filters_dense=32, \
                     conv_kernel=(3,3), pooling_kernel=(2,2), \
                     activation='relu', \
-                    loss='categorical_crossentropy', \
+                    loss='binary_crossentropy', \
                     metrics=['accuracy'], \
                     optimizer='adadelta', \
                     nb_epoch=50, verbose=1, \
