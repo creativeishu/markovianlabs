@@ -265,9 +265,12 @@ class TestSetAnalysis(object):
 			self.FPR, self.TPR, thresholds = roc_curve(\
 										self.true_labels, \
 										self.predictions[:,1])
+		else:
+			self.FPR = 0
+			self.TPR = 0
+			self.thresholds = 0
 			
-		return self.true_labels, self.predict_labels, self.predictions, \
-				self.confusion_matrix, self.FPR, self.TPR
+		return self.true_labels, self.predict_labels, self.predictions
 
 #------------------------------------------------------------------------------
 
@@ -340,6 +343,6 @@ if __name__ == "__main__":
 	data_dir = argv[2]
 	ob = TestSetAnalysis(model)
 	true_labels, predict_labels, predictions = ob.predict_generator(data_dir)
-	ob.plot_confusion_matrix(true_labels, predict_labels)
+	ob.plot_confusion_matrix()
 	# ob.plot_roc_curve(true_labels, predictions)
 
