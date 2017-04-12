@@ -233,7 +233,7 @@ class TestSetAnalysis(object):
 
 #------------------------------------------------------------------------------
 
-	def predict_generator(self, data_dir, batchsize=32):
+	def predict_gen(self, data_dir, batchsize=32):
 		self.data_dir = data_dir
 		datagen = ImageDataGenerator(rescale=1./255)
 		self.generator = datagen.flow_from_directory(self.data_dir, \
@@ -274,15 +274,19 @@ class TestSetAnalysis(object):
 
 #------------------------------------------------------------------------------
 
-	def plot_confusion_matrix(self, cmap='Blues'):
+	def plot_confusion_matrix(self, cmap='Blues', \
+								save=False, savename='cm.png'):
 		plt.figure(figsize=(8,8))
 		matrix = self.confusion_matrix/float(np.sum(self.confusion_matrix))
 		plt.imshow(matrix, cmap=cmap)
 		plt.xticks([], [])
 		plt.yticks([], [])
-		plt.clim(0,max(matrix))
-		plt.savefig('apparelvalidation15.png')
-		# plt.show()
+		plt.clim(0, np.amax(matrix))
+		if save:
+			print "Now saving confusion matrix figure"
+			plt.savefig(savename)
+		else:
+			plt.show()
 
 #------------------------------------------------------------------------------
 
@@ -342,7 +346,7 @@ if __name__ == "__main__":
 	model = argv[1]
 	data_dir = argv[2]
 	ob = TestSetAnalysis(model)
-	true_labels, predict_labels, predictions = ob.predict_generator(data_dir)
-	ob.plot_confusion_matrix()
+	true_labels, predict_labels, predictions = ob.predict_gen(data_dir)
+	ob.plot_confusion_matrix(save=True, savename='test.png')
 	# ob.plot_roc_curve(true_labels, predictions)
 
