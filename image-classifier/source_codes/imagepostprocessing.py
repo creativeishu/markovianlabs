@@ -279,7 +279,7 @@ class TestSetAnalysis(object):
 		plt.yticks([], [])
 		plt.clim(0,0.5)
 		plt.savefig('apparelvalidation15.eps')
-		plt.show()
+		# plt.show()
 
 #------------------------------------------------------------------------------
 
