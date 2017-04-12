@@ -280,8 +280,8 @@ class TestSetAnalysis(object):
 		plt.imshow(matrix, cmap=cmap)
 		plt.xticks([], [])
 		plt.yticks([], [])
-		plt.clim(0,0.5)
-		plt.savefig('apparelvalidation15.eps')
+		plt.clim(0,max(matrix))
+		plt.savefig('apparelvalidation15.png')
 		# plt.show()
 
 #------------------------------------------------------------------------------
