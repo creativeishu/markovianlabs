@@ -321,9 +321,7 @@ class Finetune(object):
             self.top_model = load_model(self.top_model_file)
 
         model = Model(inputs=self.base_model.input, \
-                        outputs=self.top_model(self.base_model.output))
-#        if savepremodel:
-#            model.save(self.premodelname, overwrite=True)            
+                        outputs=self.top_model(self.base_model.output))           
 
         for layer in model.layers[:self.untrainable_layers]:
             layer.trainable = False
@@ -331,8 +329,10 @@ class Finetune(object):
                             optimizer=self.optimizer, \
                             metrics=self.metrics)         
         if savepremodel:
+            print "Saving pre-model"
             model.save(self.premodelname, overwrite=True)
 
+        print "Now fine tuning... "
         if self.valid_dir != None:
             hist = model.fit_generator(self.train_generator, \
                 validation_data=self.valid_generator,\
