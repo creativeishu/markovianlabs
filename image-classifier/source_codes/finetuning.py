@@ -278,7 +278,7 @@ class Finetune(object):
             validation_labels = np.array(validation_labels)
             validation_labels = self.one_hot_encode_object_array(validation_labels)
 
-        print "Hola: ", train_data.shape, validation_data.shape
+#        print "Hola: ", train_data.shape, validation_data.shape
         top_model = Sequential()
         top_model.add(Flatten(input_shape=train_data.shape[1:]))
         top_model.add(Dense(256, activation='relu'))
@@ -322,14 +322,16 @@ class Finetune(object):
 
         model = Model(inputs=self.base_model.input, \
                         outputs=self.top_model(self.base_model.output))
-        if savepremodel:
-            model.save(self.premodelname, overwrite=True)            
+#        if savepremodel:
+#            model.save(self.premodelname, overwrite=True)            
 
         for layer in model.layers[:self.untrainable_layers]:
             layer.trainable = False
         model.compile(loss=self.loss, \
                             optimizer=self.optimizer, \
                             metrics=self.metrics)         
+        if savepremodel:
+            model.save(self.premodelname, overwrite=True)
 
         if self.valid_dir != None:
             hist = model.fit_generator(self.train_generator, \
