@@ -249,29 +249,25 @@ class TestSetAnalysis(object):
 		    nfiles.append(len(files))
 
 		samples = self.generator.samples
-		nb_class = self.generator.num_class
+		self.nb_class = self.generator.num_class
 		self.predictions = self.model.predict_generator(self.generator, \
 												samples/batchsize+1)
 		self.predictions = self.predictions[:samples, :]
 		self.predict_labels = np.argmax(self.predictions, axis=1)
 		self.true_labels = []
-		for i in range(nb_class):
+		for i in range(self.nb_class):
 			self.true_labels +=  list([i] * nfiles[i])
 
 		self.confusion_matrix = confusion_matrix(\
 										self.true_labels, \
 										self.predict_labels)
-		if nb_class==2:
+
+		if self.nb_class==2:
 			self.FPR, self.TPR, thresholds = roc_curve(\
 										self.true_labels, \
 										self.predictions[:,1])
-		else:
-			self.FPR = 0
-			self.TPR = 0
-			self.thresholds = 0
+			self.get_cm_index()
 			
-		return self.true_labels, self.predict_labels, self.predictions
-
 #------------------------------------------------------------------------------
 
 	def plot_confusion_matrix(self, cmap='Blues', \
@@ -290,18 +286,23 @@ class TestSetAnalysis(object):
 
 #------------------------------------------------------------------------------
 
-	def plot_roc_curve(self):
+	def plot_roc_curve(self, \
+					save=False, savename='roc.png'):
 		plt.figure(figsize=(8,8))
 		plt.plot(self.FPR, self.TPR, 'k', lw=2)
+		plt.plot(self.FPR, self.FPR, 'k', lw=0.5)
 		plt.xlim(-0.01,1)
 		plt.ylim(0,1.01)
 		plt.xlabel('$\mathtt{FalsePositiveRate}$', fontsize=22)
 		plt.ylabel('$\mathtt{TruePositiveRate}$', fontsize=22)
-		plt.show()
+		if save:
+			f.savefig(savefigname)
+		else:
+			plt.show()
 
 #------------------------------------------------------------------------------
 
-	def plot_samples(self, ind_arr, N=100, ncol=15, \
+	def plot_samples(self, ind_arr, title, N=100, ncol=15, \
 						save=False, savefigname='samples.eps'):
 
 	    ind_arr = np.random.choice(ind_arr, size=N, replace=False)
@@ -312,6 +313,7 @@ class TestSetAnalysis(object):
 	    f, axarr = plt.subplots(nrow, ncol, sharex=True, sharey=True, \
 	    						figsize=(ncol, nrow))
 	    f.subplots_adjust(wspace=0.0, hspace=0)
+	    f.suptitle("$\mathtt{%s}$"%title, fontsize=22)
 
 	    for i in range(nrow):
 	        for j in range(ncol):
@@ -320,6 +322,8 @@ class TestSetAnalysis(object):
 	            axarr[i,j].set_yticks([], [])
 	    if save:
 	    	f.savefig(savefigname)
+	    else:
+	    	plt.show()
 
 #------------------------------------------------------------------------------
 
@@ -337,16 +341,29 @@ class TestSetAnalysis(object):
 	            self.fp.append(i)
 	        elif self.true_labels[i]==1 and self.predict_labels[i]==0:
 	            self.fn.append(i)
-	    return self.tp, self.tn, self.fp, self.fn
+
+#------------------------------------------------------------------------------
+
+	def plot_all(self):
+		self.plot_confusion_matrix()
+		if self.nb_class==2:
+			self.plot_roc_curve()
+			self.plot_samples(self.tp, 'TruePositive')
+			self.plot_samples(self.fp, 'FalsePositive')
+			self.plot_samples(self.tn, 'TrueNegative')
+			self.plot_samples(self.fn, 'FalseNegative')
 
 #==============================================================================
 
 if __name__ == "__main__":
-	from sys import argv
-	model = argv[1]
-	data_dir = argv[2]
-	ob = TestSetAnalysis(model)
-	true_labels, predict_labels, predictions = ob.predict_gen(data_dir)
-	ob.plot_confusion_matrix(save=True, savename='test.png')
-	# ob.plot_roc_curve(true_labels, predictions)
+	if len(argv)==3:
+		from sys import argv
+		model = argv[1]
+		data_dir = argv[2]
+		obj = TestSetAnalysis(model, False)
+		obj.predict_gen(data_dir, batchsize=32)
+		obj.plot_all()
+	else:
+		print "Usage: Either import this class, or do:"
+		print "python imagepostprocessing <model_path> <data_directory>"
 
