@@ -10,8 +10,8 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-filename = "/Users/mohammed/Dropbox/fermilabwork/with_myself/\
-photoredshifts/data/CMASS_50features_irshad.csv"
+filename = "/data/mohammed/data/photoredshifts/CMASS_50features_irshad.csv"
+
 nCol = 50
 nb_samples_train = 300000
 nb_filters = 256
@@ -47,7 +47,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='mean_absolute_percentage_error', optimizer='adadelta')
 print model.summary()
 
-model.fit(X_train, Y_train, batch_size=512, epochs=1, verbose=1, validation_data=(X_test, Y_test))
+model.fit(X_train, Y_train, batch_size=1000, epochs=100, verbose=1, validation_data=(X_test, Y_test))
 model.save('model.hdf5')
 
 #==============================================================================
