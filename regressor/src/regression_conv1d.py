@@ -11,12 +11,13 @@ __author__ = "Irshad Mohammed"
 #==============================================================================
 
 filename = "/data/mohammed/data/photoredshifts/CMASS_50features_irshad.csv"
-
+# filename = '/Users/mohammed/Dropbox/fermilabwork/with_myself/photoredshifts/data/CMASS_50features_irshad.csv'
 nCol = 50
 nb_samples_train = 300000
 nb_filters = 256
 batch_size = 1000
 nb_epochs = 100
+kernel = 2
 
 dataframe = pandas.read_csv(filename)
 dataset = dataframe.values
@@ -25,9 +26,9 @@ Y_train = dataset[:nb_samples_train, nCol+1]
 X_test = dataset[nb_samples_train:, 1:nCol+1]
 Y_test = dataset[nb_samples_train:, nCol+1]
 
-X_train = X_train.reshape(X_train.shape[0], nCol, 1)
-X_test = X_test.reshape(X_test.shape[0], nCol, 1)
-input_shape = (nCol, 1)
+X_train = X_train.reshape(X_train.shape[0], 10, 5)
+X_test = X_test.reshape(X_test.shape[0], 10, 5)
+input_shape = X_train.shape[1:]
 
 print "Train data shape: ", X_train.shape, Y_train.shape
 print "Valid data shape: ", X_test.shape, Y_test.shape
@@ -35,11 +36,11 @@ print "Valid data shape: ", X_test.shape, Y_test.shape
 #==============================================================================
 
 model = Sequential()
-model.add(Conv1D(nb_filters, 3, padding='valid', \
+model.add(Conv1D(nb_filters, kernel, padding='valid', \
                   input_shape=input_shape, activation='relu'))
-model.add(Conv1D(nb_filters, 3, activation='relu'))
-model.add(Conv1D(nb_filters, 3, activation='relu'))
-model.add(Dropout(0.25))
+model.add(Conv1D(nb_filters, kernel, activation='relu'))
+model.add(Conv1D(nb_filters, kernel, activation='relu'))
+model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(nb_filters, activation='relu'))
 model.add(Dropout(0.5))
