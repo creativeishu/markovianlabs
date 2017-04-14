@@ -11,9 +11,10 @@ from imagepostprocessing import image_analysis as IA
 from glob import glob
 from scipy.spatial.distance import cosine 
 import cv2
+from sklearn.cluster import KMeans as KM
+
 
 __author__ = "Irshad Mohammed"
-
 
 #==============================================================================
 
@@ -42,7 +43,7 @@ class VisualSearch(object):
 			self.all_features.append(\
 				self.obj_features.get_features_vector(self.filenames[i]))
 		self.all_features = np.array(self.all_features)
-		print self.all_features.shape, 'Shape of all feature array'
+		print 'Shape of all feature array: ', self.all_features.shape
 
 #------------------------------------------------------------------------------
 
@@ -63,16 +64,46 @@ class VisualSearch(object):
 	def plot_closest_images(self):
 		f, axarr = plt.subplots(1, len(self.resultnames)+1, \
 		                        sharex=False, sharey=False, \
-		                        figsize=(20, 20/(len(self.resultnames)+1)))
+		                        figsize=(3*(len(self.resultnames)+1), 3))
 		f.subplots_adjust(wspace=0, hspace=0)
-		axarr[0].imshow(cv2.imread(self.imgpath))
+		axarr[0].imshow(cv2.resize(cv2.imread(self.imgpath), (224, 224)))
+		axarr[0].set_xlabel('$\mathtt{Query}$', fontsize=22)
 		axarr[0].set_xticks([], [])
 		axarr[0].set_yticks([], [])
 		for i in range(1, len(self.resultnames)+1):
-		    axarr[i].imshow(cv2.imread(self.resultnames[i-1]))
-		    axarr[i].set_xticks([], [])
-		    axarr[i].set_yticks([], [])
+			axarr[i].imshow(cv2.resize(cv2.imread(self.resultnames[i-1]), (224, 224)))
+			axarr[i].set_xticks([], [])
+			axarr[i].set_yticks([], [])
+			axarr[i].set_xlabel('$\mathtt{Result\ %i}$'%i, fontsize=22)
 		plt.show()
+
+#------------------------------------------------------------------------------
+
+	def get_clustering_labels(self, nClusters=4, plot=False):
+		kmeans = KM(n_clusters=nClusters, random_state=0).fit(self.all_features)
+		self.clustering_labels = kmeans.labels_
+		if plot:
+			self.plot_clustering()
+		return self.clustering_labels
+
+#------------------------------------------------------------------------------
+
+	def plot_clustering(self, ncol=5):
+		f, axarr = plt.subplots(max(self.clustering_labels)+1, ncol, \
+		                        sharex=False, sharey=False, \
+		                        figsize=(ncol*3, 3*(max(self.clustering_labels)+1)))
+		f.subplots_adjust(wspace=0, hspace=0)
+
+		for i in range(max(self.clustering_labels)+1):
+			inds = np.where(self.clustering_labels==i)[0]
+			for j in range(min(ncol, len(inds))):
+				axarr[i,j].imshow(cv2.resize(cv2.imread(self.filenames[inds[j]]), (224,224)))
+			axarr[i,0].set_ylabel('$\mathtt{Class\ %i}$'%i, fontsize=22)
+
+		for i in range(max(self.clustering_labels)+1):
+			for j in range(ncol):
+				axarr[i,j].set_xticks([], [])
+				axarr[i,j].set_yticks([], [])
 
 #==============================================================================
 
