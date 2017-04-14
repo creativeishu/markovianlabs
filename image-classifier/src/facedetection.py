@@ -9,10 +9,15 @@ import copy
 from vggface import VGGFace
 from scipy.spatial.distance import cosine, correlation
 import face_recognition
+from keras.models import Model
+
 
 #==============================================================================
 
-model = VGGFace()
+base_model = VGGFace()
+layername = 'fc6'
+model = Model(inputs=base_model.input, \
+				outputs=base_model.get_layer(layername).output)
 
 #==============================================================================
 
@@ -47,7 +52,7 @@ def faceidentify(image, model):
 	im[:, :, 2] -= 129.1863
 	im = np.expand_dims(im, axis=0)
 	res = model.predict(im)
-	res = np.reshape(res, (2622))
+	res = np.ndarray.flatten(res)
 	return res
 
 #------------------------------------------------------------------------------
@@ -75,7 +80,7 @@ for i in range(nfaces1):
 		f, axarr = plt.subplots(1, 3, sharex=False, sharey=False, figsize=(15,5))
 		f.subplots_adjust(wspace=0.01,hspace=0.01)
 		similarity = 1-cosine(data1[i][1], data2[j][1])
-		similarity = np.exp(-((1-similarity)/0.1)**2)
+		similarity = np.exp(-((1-similarity)/0.03)**2)
 		axarr[0].imshow(data1[i][0])
 		axarr[0].xaxis.set_major_formatter(plt.NullFormatter())
 		axarr[0].yaxis.set_major_formatter(plt.NullFormatter())
@@ -88,7 +93,5 @@ for i in range(nfaces1):
 		axarr[2].yaxis.set_major_formatter(plt.NullFormatter())
 		axarr[2].legend(loc=2, fontsize=14)
 		plt.show()
-
-
 
 #==============================================================================
