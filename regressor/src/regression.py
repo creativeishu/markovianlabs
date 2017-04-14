@@ -91,7 +91,7 @@ class regression(object):
 			self.model.add(Dense(self.nfilters_dense[i], \
 									activation=activation_dense))
 			self.model.add(Dropout(0.5))
-		self.model.add(Dense(1, activation='sigmoid'))
+		self.model.add(Dense(1))
 
 #------------------------------------------------------------------------------
 	
