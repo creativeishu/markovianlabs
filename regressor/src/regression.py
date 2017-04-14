@@ -15,7 +15,7 @@ class regression(object):
 	"""
 	main doc string
 	"""
-	def __init__(self, filename, header=0, footer=0, shuffle=True):
+	def __init__(self, filename, shuffle=True):
 		"""
 		constructor's doc string
 		"""
@@ -120,6 +120,7 @@ class regression(object):
 					verbose=verbose)
 		if save:
 			self.model.save(savefilename)
+		return self.hist
 
 #==============================================================================
 
