@@ -1,6 +1,8 @@
 """
 DESCRIPTION
 """
+import sys
+sys.path.append('/Users/mohammed/github/markovianlabs/image-classifier/source_codes/')
 
 from finetuning import Finetune as F
 

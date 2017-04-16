@@ -1,6 +1,8 @@
 """
 DESCRIPTION
 """
+import sys
+sys.path.append('/Users/mohammed/github/markovianlabs/image-classifier/source_codes/')
 
 from train_models import train_models_generator as T
 

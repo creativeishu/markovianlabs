@@ -14,10 +14,12 @@ from keras.models import Model
 
 #==============================================================================
 
-base_model = VGGFace()
+facemodel = VGGFace()
 layername = 'fc6'
-model = Model(inputs=base_model.input, \
-				outputs=base_model.get_layer(layername).output)
+# model = Model(inputs=base_model.input, \
+# 				outputs=base_model.get_layer(layername).output)
+model = Model(inputs=facemodel.layers[0].input, \
+				outputs=facemodel.layers[-2].output)
 
 #==============================================================================
 
@@ -80,7 +82,7 @@ for i in range(nfaces1):
 		f, axarr = plt.subplots(1, 3, sharex=False, sharey=False, figsize=(15,5))
 		f.subplots_adjust(wspace=0.01,hspace=0.01)
 		similarity = 1-cosine(data1[i][1], data2[j][1])
-		similarity = np.exp(-((1-similarity)/0.03)**2)
+		# similarity = np.exp(-((1-similarity)/0.03)**2)
 		axarr[0].imshow(data1[i][0])
 		axarr[0].xaxis.set_major_formatter(plt.NullFormatter())
 		axarr[0].yaxis.set_major_formatter(plt.NullFormatter())
