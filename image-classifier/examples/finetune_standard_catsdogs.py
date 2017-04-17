@@ -4,6 +4,7 @@ DESCRIPTION
 import sys
 sys.path.append('/Users/mohammed/github/markovianlabs/image-classifier/source_codes/')
 
+import pickle
 from finetuning import Finetune as F
 
 #==============================================================================
@@ -56,3 +57,7 @@ ob = F(modelname, train_dir, valid_dir, save_dir,\
 
 hist = ob.fine_tune(Train_bottleneck, Train_topmodel, \
                     verbose, savemodel, savepremodel)
+
+pickle.dump(hist.history, open(savefilename.replace('.hdf5', '_hist.p'), "w"))
+
+#==============================================================================

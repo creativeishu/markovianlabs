@@ -4,6 +4,7 @@ DESCRIPTION
 import sys
 sys.path.append('/Users/mohammed/github/markovianlabs/image-classifier/source_codes/')
 
+import pickle
 from train_models import train_models_generator as T
 
 #==============================================================================
@@ -55,3 +56,7 @@ hist = ob.train_custom_model(nlayers_conv, filters_conv, \
         conv_kernel, pooling_kernel, activation, \
         loss, metrics, optimizer, nb_epoch, verbose, \
         save, savefilename, print_metadata)
+
+pickle.dump(hist.history, open(savefilename.replace('.hdf5', '_hist.p'), "w"))
+
+#==============================================================================
