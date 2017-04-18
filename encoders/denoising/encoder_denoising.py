@@ -16,11 +16,11 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-Xtrain = np.load('data162_lens.npy')
-Ytrain = np.load('data161_lens.npy')
+# Xtrain = np.load('data162_lens.npy')
+# Ytrain = np.load('data161_lens.npy')
 
-# Xtrain = np.load('/data/mohammed/data/deeplensing/data162/data162_lens.npy')
-# Ytrain = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
+Xtrain = np.load('/data/mohammed/data/deeplensing/data162/data162_lens.npy')
+Ytrain = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
 
 Xtrain = Xtrain/255.0
 Ytrain = Ytrain/255.0
