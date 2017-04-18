@@ -16,14 +16,13 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-# data = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
-data = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
+data = np.load('../denoising/data161_lens.npy')
+# data = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
 
 data = data/255.0
-data = np.transpose(data, (0,2,3,1))
 
 print data.shape
-nsamples_train = 20000
+nsamples_train = 10000
 nsamples_valid = 10000
 
 xtrain = data[:nsamples_train,:,:,:2]
