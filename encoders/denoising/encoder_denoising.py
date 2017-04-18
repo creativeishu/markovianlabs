@@ -87,7 +87,7 @@ x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
 x = UpSampling2D((2, 2))(x)
 x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
 x = UpSampling2D((2, 2))(x)
-decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+decoded = Conv2D(outputshape[-1], (3, 3), activation='sigmoid', padding='same')(x)
 
 model = Model(input_img, decoded)
 model.compile(optimizer='adadelta', loss='binary_crossentropy')

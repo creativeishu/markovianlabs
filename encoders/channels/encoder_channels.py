@@ -5,7 +5,7 @@ from sys import exit, argv
 from keras import backend as K
 from keras.layers import Flatten, Dense, Dropout, Input
 from keras.layers.convolutional import ZeroPadding2D
-from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import Conv2D, UpSampling2D
 from keras.layers.pooling import MaxPooling2D
 from keras.models import Model, Sequential
 from keras.datasets import cifar100
@@ -16,17 +16,21 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-Xtrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data162/xtrain_lenspop.npy')
-Ytrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
+data = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
+# data = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
 
+data = data/255.0
+data = np.transpose(data, (0,2,3,1))
+
+print data.shape
 nsamples_train = 20000
 nsamples_valid = 10000
 
-xtrain = np.transpose(Xtrain[:nsamples_train], (0,2,3,1))
-xvalid = np.transpose(Xtrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
+xtrain = data[:nsamples_train,:,:,:2]
+xvalid = data[nsamples_train:nsamples_train+nsamples_valid,:,:,:2]
 
-ytrain = np.transpose(Ytrain[:nsamples_train], (0,2,3,1))
-yvalid = np.transpose(Ytrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
+ytrain = data[:nsamples_train,:,:,2:3]
+yvalid = data[nsamples_train:nsamples_train+nsamples_valid,:,:,2:3]
 
 print "Training set: ", xtrain.shape, ytrain.shape
 print "Test set: ", xvalid.shape, yvalid.shape
@@ -39,32 +43,52 @@ filters_conv = [128, 64, 32]
 inputshape = xtrain.shape[1:]
 outputshape = ytrain.shape[1:]
 activation = 'relu'
-batch_size = 1000
-savefilename = 'denoising_162_161.hdf5'
+batch_size = 100
+savefilename = 'channels_161.hdf5'
 
 print "Inputshape: ", inputshape
 print "outputshape: ", outputshape
 # exit()
 #==============================================================================
 
-model = Sequential()
+# model = Sequential()
 
-model.add(Conv2D(xtrain.shape[-1], conv_kernel, \
-	padding='same', activation=activation, input_shape=inputshape))
+# model.add(Conv2D(xtrain.shape[-1], conv_kernel, \
+# 	padding='same', activation=activation, input_shape=inputshape))
 
-for i in range(nlayers_conv):
-    model.add(Conv2D(filters_conv[i], conv_kernel, \
-    	padding='same', activation=activation))
+# for i in range(nlayers_conv):
+#     model.add(Conv2D(filters_conv[i], conv_kernel, \
+#     	padding='same', activation=activation))
 
-for i in range(nlayers_conv):
-    model.add(Conv2D(filters_conv[nlayers_conv-1-i], conv_kernel, \
-    	padding='same', activation=activation))
+# for i in range(nlayers_conv):
+#     model.add(Conv2D(filters_conv[nlayers_conv-1-i], conv_kernel, \
+#     	padding='same', activation=activation))
 
-model.add(Conv2D(outputshape[-1], conv_kernel, \
-	padding='same', activation=activation))
+# model.add(Conv2D(outputshape[-1], conv_kernel, \
+# 	padding='same', activation=activation))
 
-model.compile(optimizer='rmsprop', loss='mean_squared_error')
+# model.compile(optimizer='rmsprop', loss='mean_squared_error')
 
+# print model.summary()
+# exit()
+#==============================================================================
+
+input_img = Input(shape=inputshape)  # adapt this if using `channels_first` image data format
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+x = MaxPooling2D((2, 2), padding='same')(x)
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+encoded = MaxPooling2D((2, 2), padding='same')(x)
+
+# at this point the representation is (7, 7, 32)
+
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+x = UpSampling2D((2, 2))(x)
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+x = UpSampling2D((2, 2))(x)
+decoded = Conv2D(outputshape[-1], (3, 3), activation='sigmoid', padding='same')(x)
+
+model = Model(input_img, decoded)
+model.compile(optimizer='adadelta', loss='binary_crossentropy')
 print model.summary()
 # exit()
 #==============================================================================
