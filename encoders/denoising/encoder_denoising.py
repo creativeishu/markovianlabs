@@ -5,7 +5,7 @@ from sys import exit, argv
 from keras import backend as K
 from keras.layers import Flatten, Dense, Dropout, Input
 from keras.layers.convolutional import ZeroPadding2D
-from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import Conv2D, UpSampling2D
 from keras.layers.pooling import MaxPooling2D
 from keras.models import Model, Sequential
 from keras.datasets import cifar100
@@ -18,6 +18,9 @@ __author__ = "Irshad Mohammed"
 
 Xtrain = np.load('/data/mohammed/data/deeplensing/data162/xtrain_lenspop.npy')
 Ytrain = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
+
+# Xtrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/data162/xtrain_lenspop.npy')
+# Ytrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/data161/xtrain_lenspop.npy')
 
 Xtrain = Xtrain/255.0
 Ytrain = Ytrain/255.0
@@ -50,26 +53,46 @@ print "outputshape: ", outputshape
 # exit()
 #==============================================================================
 
-model = Sequential()
+# model = Sequential()
 
-model.add(Conv2D(xtrain.shape[-1], conv_kernel, \
-	padding='same', activation=activation, input_shape=inputshape))
+# model.add(Conv2D(xtrain.shape[-1], conv_kernel, \
+# 	padding='same', activation=activation, input_shape=inputshape))
 
-for i in range(nlayers_conv):
-    model.add(Conv2D(filters_conv[i], conv_kernel, \
-    	padding='same', activation=activation))
+# for i in range(nlayers_conv):
+#     model.add(Conv2D(filters_conv[i], conv_kernel, \
+#     	padding='same', activation=activation))
 
-for i in range(nlayers_conv):
-    model.add(Conv2D(filters_conv[nlayers_conv-1-i], conv_kernel, \
-    	padding='same', activation=activation))
+# for i in range(nlayers_conv):
+#     model.add(Conv2D(filters_conv[nlayers_conv-1-i], conv_kernel, \
+#     	padding='same', activation=activation))
 
-model.add(Conv2D(outputshape[-1], conv_kernel, \
-	padding='same', activation=activation))
+# model.add(Conv2D(outputshape[-1], conv_kernel, \
+# 	padding='same', activation=activation))
 
-model.compile(optimizer='rmsprop', loss='mean_squared_error')
+# model.compile(optimizer='rmsprop', loss='mean_squared_error')
 
-print model.summary()
+# print model.summary()
 # exit()
+#==============================================================================
+
+input_img = Input(shape=inputshape)  # adapt this if using `channels_first` image data format
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+x = MaxPooling2D((2, 2), padding='same')(x)
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+encoded = MaxPooling2D((2, 2), padding='same')(x)
+
+# at this point the representation is (7, 7, 32)
+
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+x = UpSampling2D((2, 2))(x)
+x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+x = UpSampling2D((2, 2))(x)
+decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
+model = Model(input_img, decoded)
+model.compile(optimizer='adadelta', loss='binary_crossentropy')
+print model.summary()
+
 #==============================================================================
 
 hist = model.fit(xtrain, ytrain, \
