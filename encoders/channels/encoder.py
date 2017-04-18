@@ -16,25 +16,21 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-from keras.datasets import mnist
-(x_train, y_train), (x_test, y_test) = cifar100.load_data(label_mode='fine')
-x_train = x_train/255.0
-x_test = x_test/255.0
+Xtrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data162/xtrain_lenspop.npy')
+Ytrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
 
-xtrain = x_train[:,:,:,:2]
-ytrain = x_train[:,:,:,2]
+nsamples_train = 20000
+nsamples_valid = 10000
 
-xtest = x_test[:,:,:,:2]
-ytest = x_test[:,:,:,2]
+xtrain = np.transpose(Xtrain[:nsamples_train], (0,2,3,1))
+xvalid = np.transpose(Xtrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
 
-ytrain = np.reshape(ytrain, \
-	(ytrain.shape[0], ytrain.shape[1], ytrain.shape[2], 1))
-ytest = np.reshape(ytest, \
-	(ytest.shape[0], ytest.shape[1], ytest.shape[2], 1))
+ytrain = np.transpose(Ytrain[:nsamples_train], (0,2,3,1))
+yvalid = np.transpose(Ytrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
 
 print "Training set: ", xtrain.shape, ytrain.shape
-print "Test set: ", xtest.shape, ytest.shape
-
+print "Test set: ", xvalid.shape, yvalid.shape
+# exit()
 #==============================================================================
 
 nlayers_conv = 3
@@ -44,11 +40,11 @@ inputshape = xtrain.shape[1:]
 outputshape = ytrain.shape[1:]
 activation = 'relu'
 batch_size = 1000
-savefilename = 'encoder.hdf5'
+savefilename = 'denoising_162_161.hdf5'
 
 print "Inputshape: ", inputshape
 print "outputshape: ", outputshape
-
+# exit()
 #==============================================================================
 
 model = Sequential()
@@ -70,11 +66,11 @@ model.add(Conv2D(outputshape[-1], conv_kernel, \
 model.compile(optimizer='rmsprop', loss='mean_squared_error')
 
 print model.summary()
-
+# exit()
 #==============================================================================
 
 hist = model.fit(xtrain, ytrain, \
 					epochs=50, batch_size=batch_size, \
-					validation_data=(xtest, ytest))
+					validation_data=(xvalid, yvalid))
 model.save(savefilename)
 pickle.dump(hist.history, open(savefilename.replace('.hdf5', '_hist.p'), "w"))
