@@ -16,23 +16,23 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-Xtrain = np.load('/data/mohammed/data/deeplensing/data162/xtrain_lenspop.npy')
-Ytrain = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
+Xtrain = np.load('data162_lens.npy')
+Ytrain = np.load('data161_lens.npy')
 
-# Xtrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/data162/xtrain_lenspop.npy')
-# Ytrain = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/data161/xtrain_lenspop.npy')
+# Xtrain = np.load('/data/mohammed/data/deeplensing/data162/data162_lens.npy')
+# Ytrain = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
 
 Xtrain = Xtrain/255.0
 Ytrain = Ytrain/255.0
 
-nsamples_train = 20000
+nsamples_train = 10000
 nsamples_valid = 10000
 
-xtrain = np.transpose(Xtrain[:nsamples_train], (0,2,3,1))
-xvalid = np.transpose(Xtrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
+xtrain = Xtrain[:nsamples_train]
+xvalid = Xtrain[nsamples_train:nsamples_train+nsamples_valid]
 
-ytrain = np.transpose(Ytrain[:nsamples_train], (0,2,3,1))
-yvalid = np.transpose(Ytrain[nsamples_train:nsamples_train+nsamples_valid], (0,2,3,1))
+ytrain = Ytrain[:nsamples_train]
+yvalid = Ytrain[nsamples_train:nsamples_train+nsamples_valid]
 
 print "Training set: ", xtrain.shape, ytrain.shape
 print "Test set: ", xvalid.shape, yvalid.shape
