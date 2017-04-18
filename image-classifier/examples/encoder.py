@@ -53,7 +53,7 @@ print "outputshape: ", outputshape
 
 model = Sequential()
 
-model.add(Conv2D(x_train.shape[-1], conv_kernel, \
+model.add(Conv2D(xtrain.shape[-1], conv_kernel, \
 	padding='same', activation=activation, input_shape=inputshape))
 
 for i in range(nlayers_conv):
