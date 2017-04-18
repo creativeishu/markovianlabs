@@ -19,6 +19,9 @@ __author__ = "Irshad Mohammed"
 Xtrain = np.load('/data/mohammed/data/deeplensing/data162/xtrain_lenspop.npy')
 Ytrain = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
 
+Xtrain = Xtrain/255.0
+Ytrain = Ytrain/255.0
+
 nsamples_train = 20000
 nsamples_valid = 10000
 
@@ -39,7 +42,7 @@ filters_conv = [128, 64, 32]
 inputshape = xtrain.shape[1:]
 outputshape = ytrain.shape[1:]
 activation = 'relu'
-batch_size = 1000
+batch_size = 100
 savefilename = 'denoising_162_161.hdf5'
 
 print "Inputshape: ", inputshape
