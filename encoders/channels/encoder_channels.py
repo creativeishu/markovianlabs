@@ -16,8 +16,8 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-data = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
-# data = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
+# data = np.load('/Users/mohammed/Dropbox/deeplensing/Data/Simulation/SimLensPop/Data161/xtrain_lenspop.npy')
+data = np.load('/data/mohammed/data/deeplensing/data161/xtrain_lenspop.npy')
 
 data = data/255.0
 data = np.transpose(data, (0,2,3,1))
