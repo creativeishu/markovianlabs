@@ -16,8 +16,8 @@ __author__ = "Irshad Mohammed"
 
 #==============================================================================
 
-data = np.load('../denoising/data161_lens.npy')
-# data = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
+# data = np.load('../denoising/data161_lens.npy')
+data = np.load('/data/mohammed/data/deeplensing/data161/data161_lens.npy')
 
 data = data/255.0
 

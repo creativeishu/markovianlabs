@@ -79,6 +79,8 @@ input_img = Input(shape=inputshape)  # adapt this if using `channels_first` imag
 x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
 x = MaxPooling2D((2, 2), padding='same')(x)
 x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+#x = MaxPooling2D((2, 2), padding='same')(x)
+#x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
 encoded = MaxPooling2D((2, 2), padding='same')(x)
 
 # at this point the representation is (7, 7, 32)
@@ -87,6 +89,8 @@ x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
 x = UpSampling2D((2, 2))(x)
 x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
 x = UpSampling2D((2, 2))(x)
+#x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+#x = UpSampling2D((2, 2))(x)
 decoded = Conv2D(outputshape[-1], (3, 3), activation='sigmoid', padding='same')(x)
 
 model = Model(input_img, decoded)
@@ -96,7 +100,7 @@ print model.summary()
 #==============================================================================
 
 hist = model.fit(xtrain, ytrain, \
-					epochs=50, batch_size=batch_size, \
+					epochs=25, batch_size=batch_size, \
 					validation_data=(xvalid, yvalid))
 model.save(savefilename)
 pickle.dump(hist.history, open(savefilename.replace('.hdf5', '_hist.p'), "w"))
