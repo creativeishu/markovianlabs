@@ -233,9 +233,9 @@ class TestSetAnalysis(object):
 
 #------------------------------------------------------------------------------
 
-	def predict_gen(self, data_dir, batchsize=32):
+	def predict_gen(self, data_dir, batchsize=32, rescale=1.0/255):
 		self.data_dir = data_dir
-		datagen = ImageDataGenerator(rescale=1./255)
+		datagen = ImageDataGenerator(rescale=rescale)
 		self.generator = datagen.flow_from_directory(self.data_dir, \
 								target_size=self.inputshape[:2], \
 		                        batch_size=batchsize, \
@@ -273,7 +273,10 @@ class TestSetAnalysis(object):
 	def plot_confusion_matrix(self, cmap='Blues', \
 								save=False, savename='cm.png'):
 		plt.figure(figsize=(8,8))
-		matrix = self.confusion_matrix/float(np.sum(self.confusion_matrix))
+		matrix = np.zeros(self.confusion_matrix.shape)
+		for i in range(len(matrix)):
+			matrix[i] = self.confusion_matrix[i]/\
+						float(np.sum(self.confusion_matrix[i]))
 		plt.imshow(matrix, cmap=cmap)
 		plt.xticks([], [])
 		plt.yticks([], [])
@@ -283,6 +286,7 @@ class TestSetAnalysis(object):
 			plt.savefig(savename)
 		else:
 			plt.show()
+		return matrix
 
 #------------------------------------------------------------------------------
 
