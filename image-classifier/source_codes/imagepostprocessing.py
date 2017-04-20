@@ -280,7 +280,7 @@ class TestSetAnalysis(object):
 		plt.imshow(matrix, cmap=cmap)
 		plt.xticks([], [])
 		plt.yticks([], [])
-		plt.clim(0, np.amax(matrix))
+		plt.clim(0, 1)
 		if save:
 			print "Now saving confusion matrix figure"
 			plt.savefig(savename)
@@ -295,6 +295,8 @@ class TestSetAnalysis(object):
 		plt.figure(figsize=(8,8))
 		plt.plot(self.FPR, self.TPR, 'k', lw=2)
 		plt.plot(self.FPR, self.FPR, 'k', lw=0.5)
+		plt.axhline(y=1, color='k', ls=':', lw=0.5)
+		plt.axvline(x=0, color='k', ls=':', lw=0.5)
 		plt.xlim(-0.01,1)
 		plt.ylim(0,1.01)
 		plt.xlabel('$\mathtt{FalsePositiveRate}$', fontsize=22)
