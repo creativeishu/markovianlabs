@@ -17,7 +17,7 @@ class TextProcessing:
 	"""
 	Processing util for working with text data.
 	"""
-	def __init__(self, texts, labels, EMBEDDING_DIM=300, MAX_SEQUENCE_LENGTH=100, MAX_NB_WORDS=20000, VALIDATION_SPLIT=None):
+	def __init__(self, texts, labels, EMBEDDING_DIM=300, MAX_SEQUENCE_LENGTH=100, MAX_NB_WORDS=20000, VALIDATION_SPLIT=0.0):
 		"""
 		Instantiates the class.
 
