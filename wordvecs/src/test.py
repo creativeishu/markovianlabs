@@ -15,7 +15,7 @@ VALIDATION_SPLIT = 0.2
 pos_file = '../data/rt-polarity.pos'
 neg_file = '../data/rt-polarity.neg'
 
-fname = sys.argv[3]
+fname = sys.argv[1]
 
 
 # Prepare text samples and their labels
