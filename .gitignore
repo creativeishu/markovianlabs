@@ -1,7 +1,6 @@
 *.npy
 *.pyc
 ~*
-data/
 *checkpoints*
 irshad/
 website/Uploads/
