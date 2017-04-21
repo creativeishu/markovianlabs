@@ -1,4 +1,5 @@
 import sys
+import os
 
 from text_processing_util import TextProcessing
 from text_cnn import kimCNN
@@ -14,8 +15,7 @@ VALIDATION_SPLIT = 0.2
 
 pos_file = '../data/rt-polarity.pos'
 neg_file = '../data/rt-polarity.neg'
-
-fname = sys.argv[1]
+fname = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/wordvectors/GoogleNews-vectors-negative300.bin'%os.getlogin()
 
 
 # Prepare text samples and their labels
@@ -34,7 +34,7 @@ with open(neg_file, "rb") as f:
 	    labels.append('neg')
 	    texts.append(line.strip())
 
-print(texts[0])
+
 print("Found %s texts" %len(texts))
 print("Found %s labels" %len(labels))
 
