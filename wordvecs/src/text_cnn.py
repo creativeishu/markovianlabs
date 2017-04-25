@@ -4,6 +4,7 @@ import numpy as np
 
 from keras.layers import Dense, Input, Flatten, Reshape, concatenate, Dropout
 from keras.layers import Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Embedding
+from keras.layers import LSTM, Bidirectional
 from keras.models import Model
 from keras import optimizers
 from keras import regularizers
