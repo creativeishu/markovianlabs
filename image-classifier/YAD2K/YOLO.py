@@ -16,9 +16,10 @@ from yad2k.models.keras_yolo import yolo_eval, yolo_head
 parser = argparse.ArgumentParser(
     description='Run a YOLO_v2 style detection model on test images..')
 parser.add_argument(
-    'model_path',
+    '--model_path',
     help='path to h5 model file containing body'
-    'of a YOLO_v2 model')
+    'of a YOLO_v2 model',
+    default='/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/image_classifiers/Yolo/yolo.h5'%os.getlogin())
 parser.add_argument(
     '-a',
     '--anchors_path',
@@ -30,15 +31,13 @@ parser.add_argument(
     help='path to classes file, defaults to coco_classes.txt',
     default='model_data/coco_classes.txt')
 parser.add_argument(
-    '-t',
-    '--test_path',
-    help='path to directory of test images, defaults to images/',
-    default='images')
+    'test_path',
+    help='path to directory containing test images')
 parser.add_argument(
     '-o',
     '--output_path',
-    help='path to output test images, defaults to images/out',
-    default='images/out')
+    help='path to the directory containing output images, defaults to out',
+    default='out')
 parser.add_argument(
     '-s',
     '--score_threshold',
