@@ -145,39 +145,19 @@ class lstm_sequence(object):
 
 #==============================================================================
 
-# x = np.linspace(0, 100, 1000)
-# y = np.sin(x)
+if __name__ == "__main__":
+	x = np.linspace(0, 100, 1000)
+	y = np.sin(x)
 
-import csv
-max_values = 100000
-filename = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/regression/\
-sequences/ibm_stocks.csv'%os.getlogin()
-with open(filename) as f:
-    data = csv.reader(f, delimiter=",")
-    power = []
-    nb_of_values = 0
-    for line in data:
-        try:
-            power.append(float(line[4]))
-            nb_of_values += 1
-        except ValueError:
-            pass
-        if nb_of_values >= max_values:
-            break
-power = np.array(power)
-y = power/np.max(power)
-# plt.plot(y)
-# plt.show()
+	obj = lstm_sequence(nSequence=1, sequence_length=11, \
+							nlayers_lstm=2, nlayers_dense=2, \
+							nfilters_lstm=32, nfilters_dense=32, 
+							loss='mean_squared_error', optimizer='adadelta', \
+							save=False, savemodelname='model.hdf5')
 
-obj = lstm_sequence(nSequence=1, sequence_length=11, \
-						nlayers_lstm=3, nlayers_dense=2, \
-						nfilters_lstm=128, nfilters_dense=32, 
-						loss='mean_squared_error', optimizer='adadelta', \
-						save=False, savemodelname='model.hdf5')
+	hist = obj.fit_data(y, ratio=1.0, batch_size=100, epochs=100, \
+						val_split=0.2, verbose=1)
 
-hist = obj.fit_data(y, ratio=1.0, batch_size=100, epochs=50, \
-					val_split=0.2, verbose=1)
-
-y_pred = obj.get_prediction(plot=True)
+	y_pred = obj.get_prediction(plot=True)
 
 #==============================================================================
