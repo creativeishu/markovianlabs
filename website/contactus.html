@@ -23,7 +23,7 @@
 
 
 
-	<div class="site-wrapper page-demo">
+	<div class="site-wrapper page-contactus">
 
 		<div class="header">
 			<div class="logo"><a href="/index.html"><span>Markovian</span> Labs</a></div>
@@ -58,41 +58,27 @@
 		</div>
 
 		<main id="mainContent" role="main">
-			<div class="demo-section">
-	<div class="heading">Our modes automatically recognize the objects, concepts, color in images</div>
-	<div class="left">
-		<div class="main-image-section"><img src="assets/img/CityPalace.jpg" alt=""></div>
-	</div>
-	<div class="right">	
-		<div class="result">
-			<h1>results</h1>
-			<ul>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-				<li><span class="category">category</span><span class="prob">prob</span></li>
-			</ul>
-		</div>
-	</div>
-	<div class="thumbnail-section">
-		<ul>
-			<li><img src="assets/img/Cat.jpg" alt=""></li>
-			<li><img src="assets/img/camera.jpg" alt=""></li>
-			<li><img src="assets/img/Coffee1.jpg" alt=""></li>
-			<li><img src="assets/img/vulture.jpg" alt=""></li>
-			<li><img src="assets/img/CityPalace.jpg" alt=""></li>
-			<li><img src="assets/img/hero-MOBILE.jpg" alt=""></li>
-		</ul>
-		<div class="upload-button">
-	    	<label class="upload-image">
-			    <input type="file" />
-			    <span>Upload your Image</span>
-			</label>
-		</div>	
-	</div>
-</div>
+			<form id="ContactusForm" novalidate class="inpage-form" action="mailto:you@yourwebsite.com">
+
+	<label for="Firstname">First name*</label>
+	<input id="Firstname" name="Firstname" type="text" data-validation-empty="Please enter a valid first name." data-required="true" placeholder="First Name" />
+
+	<label for="Lastname">Last name*</label>
+	<input id="Lastname" name="Lastname" type="text" data-validation-empty="Please enter a valid last name." data-required="true" placeholder="Last Name" />
+
+	<label for="Email">Email*</label>
+	<input id="EmailAddress" name="EmailAddress" type="text" data-validation-empty="Please add an email address." data-validation-regex="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" data-validation-format="Please enter vaild email address" data-required="true" placeholder="Email Address" />
+
+	<label for="Mobile">Mobile Number*</label>
+	<input id="Mobile" name="Mobile" type="text" data-validation-regex=""  data-validation-empty="Please enter your mobile phone number." data-validation-format="testing" data-required="true" placeholder="+91 1234567890" />
+
+	<label for="Comment">Comment</label>
+	<textarea id="Comment" name="Comment" placeholder="Comment" ></textarea>
+
+	<input class="button" type="submit" value="Submit" />
+</form>
+
+
 		</main>
 
 
