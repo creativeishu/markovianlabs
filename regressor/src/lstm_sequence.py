@@ -133,14 +133,17 @@ class lstm_sequence(object):
 
 #------------------------------------------------------------------------------
 
-	def get_prediction(self, plot=True):
+	def get_prediction(self, plot=True, save=False, savefilename='compare.png'):
 		y_pred = self.model.predict(self.xtrain)
 		if plot:
 			plt.figure(figsize=(15,5))
 			plt.plot(self.ytrain,'r', lw=2, label='$\mathtt{Data}$')
 			plt.plot(y_pred, '--g', lw=2, label='$\mathtt{Predicted}$')
 			plt.legend(loc=1, fontsize=16)
-			plt.show()
+			if save:
+				plt.savefig(savefilename)
+			else:
+				plt.show()
 		return y_pred
 
 #==============================================================================
