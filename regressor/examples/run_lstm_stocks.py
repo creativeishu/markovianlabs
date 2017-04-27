@@ -26,7 +26,7 @@ ratio=1.0
 # filename = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/regression/\
 # sequences/ibm_stocks.csv'%os.getlogin()
 
-filename = '/Users/mohammed/Downloads/table.csv'
+filename = 'table.csv'
 delimiter=","
 col = 6
 

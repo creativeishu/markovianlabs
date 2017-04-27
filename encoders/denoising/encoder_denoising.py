@@ -100,7 +100,7 @@ print model.summary()
 #==============================================================================
 
 hist = model.fit(xtrain, ytrain, \
-					epochs=25, batch_size=batch_size, \
+					epochs=100, batch_size=batch_size, \
 					validation_data=(xvalid, yvalid))
 model.save(savefilename)
 pickle.dump(hist.history, open(savefilename.replace('.hdf5', '_hist.p'), "w"))
