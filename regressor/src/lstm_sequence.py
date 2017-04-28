@@ -126,7 +126,7 @@ class lstm_sequence(object):
 		self.hist = self.model.fit(self.xtrain, self.ytrain, \
 						batch_size=self.batch_size, epochs=self.epochs, \
 						validation_split=self.val_split, verbose=verbose, \
-						shuffle=False)
+						shuffle=True)
 		if self.save:
 			self.model.save(self.savemodelname)
 		return self.hist

@@ -8,6 +8,8 @@ import csv
 import numpy as np 
 from sys import exit
 import matplotlib.pyplot as plt 
+from keras import backend as K
+import theano.tensor as T
 sys.path.append('/Users/%s/github/markovianlabs/regressor/src'%os.getlogin())
 
 import pickle
@@ -16,6 +18,13 @@ from lstm_sequence import lstm_sequence as L
 #==============================================================================
 
 __author__ = "Irshad Mohammed"
+
+#==============================================================================
+    
+def mse_custom(y_true, y_pred):
+    x = (y_true[:-1]-y_true[1:])/(y_pred[:-1]-y_pred[1:])
+    z = T.switch(T.lt(x,0), 1, 0) 
+    return K.mean(z)
 
 #==============================================================================
 
@@ -39,17 +48,17 @@ nfilters_dense=32
 loss='mse'
 optimizer='adadelta'
 batch_size=100
-epochs=500
-val_split=0.1
+epochs=305
+val_split=0.4
 verbose=1
 
 save=True
-savemodelname='ibm_seq%i_lstm%i_dense%i_loss%s_optimizer%s_epochs%i.hdf5'\
+savemodelname='nasdaq_seq%i_lstm%i_dense%i_loss%s_optimizer%s_epochs%i.hdf5'\
     %(sequence_length, nlayers_lstm, nlayers_dense, loss, optimizer, epochs)
 
 plot=True
 saveplot = True
-saveplotfilename = 'ibm.png'
+saveplotfilename = 'nasdaq.png'
 
 #==============================================================================
 
