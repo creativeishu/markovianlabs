@@ -2,7 +2,8 @@ import sys
 import os
 
 from text_processing_util import TextProcessing
-from text_cnn import kimCNN
+from text_cnn import kimCNN, lstm_text
+import cPickle
 
 
 MAX_SEQUENCE_LENGTH = 50
@@ -13,10 +14,12 @@ VALIDATION_SPLIT = 0.2
 
 
 
-pos_file = '../data/rt-polarity.pos'
-neg_file = '../data/rt-polarity.neg'
+# pos_file = '../data/rt-polarity.pos'
+# neg_file = '../data/rt-polarity.neg'
+pos_file = '../data/pos_data.txt'
+neg_file = '../data/neg_data.txt'
 fname = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/wordvectors/GoogleNews-vectors-negative300.bin'%os.getlogin()
-
+# fname = '../data/GoogleNews-vectors-negative300.bin'
 
 # Prepare text samples and their labels
 print('Processing text dataset')
@@ -47,12 +50,16 @@ x_train, y_train, x_val, y_val, word_index = tp.preprocess()
 embeddings_index = tp.build_embedding_index_from_word2vec(fname, word_index)
 print('Found %s word vectors.' % len(embeddings_index))
 
+cPickle.dump([word_index, embeddings_index], open('tokenization_and_embedding.p', 'wb'))
+
 labels_index = tp.labels_index
 
 model = kimCNN(EMBEDDING_DIM, MAX_SEQUENCE_LENGTH, MAX_NB_WORDS, embeddings_index, word_index, labels_index=labels_index)
+# model = lstm_text(EMBEDDING_DIM, MAX_SEQUENCE_LENGTH, MAX_NB_WORDS, embeddings_index, word_index, labels_index=labels_index)
 print(model.summary())
 
 model.fit(x=x_train, y=y_train, batch_size=50, epochs=25 , validation_data=(x_val, y_val))
+model.save('imdb_sentiment.h5')
 
 
 
