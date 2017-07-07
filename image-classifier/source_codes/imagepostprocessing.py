@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
-from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.metrics import confusion_matrix
 import cv2
 from glob import glob
@@ -264,6 +264,9 @@ class TestSetAnalysis(object):
 
 		if self.nb_class==2:
 			self.FPR, self.TPR, thresholds = roc_curve(\
+										self.true_labels, \
+										self.predictions[:,1])
+			self.roc_auc = roc_auc_score(\
 										self.true_labels, \
 										self.predictions[:,1])
 			self.get_cm_index()

@@ -12,15 +12,12 @@ from train_models import train_models_generator as T
 # Parameters:
 #------------
 
-train_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/train/'
-valid_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/validation/'
-save_dir='/Users/mohammed/Dropbox/irshad2janu/deeplearning_datasets/\
-image_classifiers/catsdogs/savedmodels/'
-img_width=224
-img_height=224
-batch_size=32
+train_dir='/Users/mohammed/Desktop/lensdata/train/'
+valid_dir=None
+save_dir='/Users/mohammed/Desktop/lensdata/savedmodels/'
+img_width=64
+img_height=64
+batch_size=20
 nchannels=3
 rescale=1./255
 shear_range=0.2
@@ -34,13 +31,13 @@ filters_dense=32
 conv_kernel=(3,3)
 pooling_kernel=(2,2)
 activation='relu'
-loss='categorical_crossentropy'
+loss='binary_crossentropy'
 metrics=['accuracy']
 optimizer='adadelta'
-nb_epoch=50
+nb_epoch=250
 verbose=1
 save=True
-savefilename='data160_convlayers%i_denselayers%i_nepoch%i.hdf5'\
+savefilename='cleandata_convlayers%i_denselayers%i_nepoch%i.hdf5'\
 				%(nlayers_conv, nlayers_dense, nb_epoch)
 print_metadata=True
 
