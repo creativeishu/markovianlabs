@@ -35,30 +35,30 @@ ratio=1.0
 # filename = '/Users/%s/Dropbox/irshad2janu/deeplearning_datasets/regression/\
 # sequences/ibm_stocks.csv'%os.getlogin()
 
-filename = 'table.csv'
+filename = 'data/table_twtr_5year.csv'
 delimiter=","
-col = 6
+col = 5
 
 nSequence=1
 sequence_length=21
-nlayers_lstm=3
+nlayers_lstm=5
 nlayers_dense=2
-nfilters_lstm=128
+nfilters_lstm=64
 nfilters_dense=32
 loss='mse'
 optimizer='adadelta'
 batch_size=100
-epochs=305
+epochs=100
 val_split=0.4
 verbose=1
 
 save=True
-savemodelname='nasdaq_seq%i_lstm%i_dense%i_loss%s_optimizer%s_epochs%i.hdf5'\
+savemodelname='models/twtr_seq%i_lstm%i_dense%i_loss%s_optimizer%s_epochs%i.hdf5'\
     %(sequence_length, nlayers_lstm, nlayers_dense, loss, optimizer, epochs)
 
 plot=True
 saveplot = True
-saveplotfilename = 'nasdaq.png'
+saveplotfilename = 'figures/twtr.png'
 
 #==============================================================================
 
@@ -98,6 +98,6 @@ for i in range(len(y_pred)-1):
 	else:
 		diff += 1
 
-print "success fraction: ", float(same)/(same+diff)
+print ("success fraction: ", float(same)/(same+diff))
 
 #==============================================================================

@@ -41,7 +41,7 @@ class lstm_sequence(object):
 		elif type(nfilters_lstm)==list:
 			self.nfilters_lstm = nfilters_lstm
 		else:
-			print "nfilters_lstm can be an int or a list"
+			print("nfilters_lstm can be an int or a list")
 			exit()
 
 		if type(nfilters_dense)==int:
@@ -49,7 +49,7 @@ class lstm_sequence(object):
 		elif type(nfilters_dense)==list:
 			self.nfilters_dense = nfilters_dense
 		else:
-			print "nfilters_dense can be an int or a list"
+			print("nfilters_dense can be an int or a list")
 			exit()
 
 		self.model = self.build_model(loss, optimizer)
@@ -57,24 +57,24 @@ class lstm_sequence(object):
 #------------------------------------------------------------------------------
 
 	def print_metadata(self):
-		print "Number of sequences: ", self.nSequence
-		print "Sequence length: ", self.sequence_length
-		print "Number of LSTM layers: ", self.nlayers_lstm
-		print "LSTM filters: ", self.nfilters_lstm
-		print "Number of Dense layers: ", self.nlayers_dense
-		print "Dense layer filters: ", self.nfilters_dense
-		print "Loss function: ", self. loss 
-		print "optimizer: ", self.optimizer
-		print "Data shape: ", self.xtrain.shape, self.ytrain.shape
-		print "Validatinon split: ", self.val_split
-		print "Number of training samples: ", \
-						int((1.0 - self.val_split)*len(self.xtrain))
-		print "Number of Validation samples: ", \
-						int((self.val_split)*len(self.xtrain))
-		print "Batch size: ", self.batch_size
-		print "Number of epochs: ", self.epochs
+		print("Number of sequences: ", self.nSequence)
+		print("Sequence length: ", self.sequence_length)
+		print("Number of LSTM layers: ", self.nlayers_lstm)
+		print("LSTM filters: ", self.nfilters_lstm)
+		print("Number of Dense layers: ", self.nlayers_dense)
+		print("Dense layer filters: ", self.nfilters_dense)
+		print("Loss function: ", self. loss) 
+		print("optimizer: ", self.optimizer)
+		print("Data shape: ", self.xtrain.shape, self.ytrain.shape)
+		print("Validatinon split: ", self.val_split)
+		print("Number of training samples: ", \
+						int((1.0 - self.val_split)*len(self.xtrain)))
+		print("Number of Validation samples: ", \
+						int((self.val_split)*len(self.xtrain)))
+		print("Batch size: ", self.batch_size)
+		print("Number of epochs: ", self.epochs)
 		if self.save:
-			print "Model will be saved at: ", self.savemodelname
+			print("Model will be saved at: ", self.savemodelname)
 
 #------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ class lstm_sequence(object):
 	    	model.add(Dense(self.nfilters_dense[i], activation='linear'))
 	    model.add(Dense(1, activation='linear'))
 	    model.compile(loss=loss, optimizer=optimizer)
-	    print model.summary()
+	    print(model.summary())
 	    return model
 
 #------------------------------------------------------------------------------
